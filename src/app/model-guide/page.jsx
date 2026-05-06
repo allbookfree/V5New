@@ -6,7 +6,7 @@ import {
   BookOpen, ChevronDown, ChevronUp, AlertTriangle, CheckCircle2, XCircle,
   Sparkles, Wand2, Search, Calendar, Star, Zap, Layers, Frame, Package,
   Puzzle, Shirt, Sunrise, Palette, Bot, Image as ImageIcon, FileText,
-  Globe, Briefcase, Plane, Repeat, Video, Monitor
+  Globe, Briefcase, Plane, Repeat, Monitor
 } from "lucide-react";
 
 // ─── Rating helpers ─────────────────────────────────────────────────
@@ -60,6 +60,8 @@ const MODELS = [
   { id: "mistral-nemo", provider: "Mistral", label: "Mistral Nemo 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
   { id: "mistral-pixtral", provider: "Mistral", label: "Pixtral 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
   // OpenRouter
+  // or-auto: OpenRouter picks the best free model dynamically — actual model may vary per request.
+  // effectiveB=50 is an estimate; real performance depends on which model OR selects.
   { id: "or-auto", provider: "OpenRouter", label: "Auto (best free)", params: "varies", effectiveB: 50, tier: "good", emoji: "🟣" },
   { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", effectiveB: 31, tier: "good", emoji: "🟣" },
   { id: "or-llama4-scout", provider: "OpenRouter", label: "Llama 4 Scout", params: "17B×16E", effectiveB: 109, tier: "good", emoji: "🟣" },
