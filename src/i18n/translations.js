@@ -15,6 +15,7 @@ const translations = {
       openMenu: "Open menu",
       history: "History",
       marketplaceGuide: "Marketplace Guide",
+      modelGuide: "Model Guide",
       apiStatus: "API Status",
     },
     home: {
@@ -504,6 +505,7 @@ const translations = {
       openMenu: "মেনু খুলুন",
       history: "ইতিহাস",
       marketplaceGuide: "মার্কেটপ্লেস গাইড",
+      modelGuide: "মডেল গাইড",
       apiStatus: "এপিআই স্ট্যাটাস",
     },
     home: {
