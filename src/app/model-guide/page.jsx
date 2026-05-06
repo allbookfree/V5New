@@ -347,6 +347,9 @@ function getModelRatingForFeature(model, feature) {
       if (model.effectiveB < 10) return { rating: 1, badge: "avoid" };
       return { rating: 2, badge: "ok" };
     }
+    if (tier === "good" && model.effectiveB < 30) {
+      return { rating: 2, badge: "ok" };
+    }
   }
 
   let badge = "good";
