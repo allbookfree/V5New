@@ -328,6 +328,12 @@ function getModelRatingForFeature(model, feature) {
   else if (tier === "limited") base = 2;
   else base = 1; // caution
 
+  // Feature-specific overrides (checked BEFORE generic minModel penalties)
+  // Auto mode needs high creativity — penalize small models
+  if (id === "auto" && (tier === "caution" || tier === "limited")) {
+    return { rating: 1, badge: "avoid" };
+  }
+
   // Penalty for small models on complex features (uses numeric effectiveB)
   if (minModel === "70B+") {
     if (tier === "caution") return { rating: 1, badge: "avoid" };
@@ -341,21 +347,6 @@ function getModelRatingForFeature(model, feature) {
       if (model.effectiveB < 10) return { rating: 1, badge: "avoid" };
       return { rating: 2, badge: "ok" };
     }
-  }
-
-  // Auto mode needs creativity — penalize small models more
-  if (id === "auto" && (tier === "caution" || tier === "limited")) {
-    return { rating: 1, badge: "avoid" };
-  }
-
-  // Surreal needs imagination
-  if (id === "surreal" && tier === "limited") {
-    return { rating: 2, badge: "ok" };
-  }
-
-  // Collection needs consistency across batch
-  if (id === "collection" && tier === "limited") {
-    return { rating: 2, badge: "ok" };
   }
 
   let badge = "good";
