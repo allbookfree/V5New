@@ -42,54 +42,56 @@ function Badge({ type, label }) {
 }
 
 // ─── Model Data ─────────────────────────────────────────────────────
+// effectiveB = effective parameter count in billions for numeric comparison.
+// For MoE models, this reflects total capacity, not per-expert count.
 const MODELS = [
   // Gemini
-  { id: "gemini-pro", provider: "Gemini", label: "Gemini 2.5 Pro", params: "~1T+", tier: "flagship", emoji: "🔵" },
-  { id: "gemini", provider: "Gemini", label: "Gemini 2.5 Flash", params: "~300B+", tier: "recommended", emoji: "🔵" },
-  { id: "gemini-lite", provider: "Gemini", label: "Gemini 2.5 Flash-Lite", params: "~100B+", tier: "good", emoji: "🔵" },
+  { id: "gemini-pro", provider: "Gemini", label: "Gemini 2.5 Pro", params: "~1T+", effectiveB: 1000, tier: "flagship", emoji: "🔵" },
+  { id: "gemini", provider: "Gemini", label: "Gemini 2.5 Flash", params: "~300B+", effectiveB: 300, tier: "recommended", emoji: "🔵" },
+  { id: "gemini-lite", provider: "Gemini", label: "Gemini 2.5 Flash-Lite", params: "~100B+", effectiveB: 100, tier: "good", emoji: "🔵" },
   // Groq
-  { id: "groq-gpt-oss", provider: "Groq", label: "GPT-OSS 120B", params: "120B", tier: "recommended", emoji: "🔴" },
-  { id: "groq", provider: "Groq", label: "Llama 3.3 70B", params: "70B", tier: "good", emoji: "🔴" },
-  { id: "groq-qwen3", provider: "Groq", label: "Qwen 3 32B", params: "32B", tier: "good", emoji: "🔴" },
-  { id: "groq-gpt-oss-20b", provider: "Groq", label: "GPT-OSS 20B", params: "20B", tier: "limited", emoji: "🔴" },
-  { id: "groq-fast", provider: "Groq", label: "Llama 3.1 8B", params: "8B", tier: "caution", emoji: "🔴" },
+  { id: "groq-gpt-oss", provider: "Groq", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "recommended", emoji: "🔴" },
+  { id: "groq", provider: "Groq", label: "Llama 3.3 70B", params: "70B", effectiveB: 70, tier: "good", emoji: "🔴" },
+  { id: "groq-qwen3", provider: "Groq", label: "Qwen 3 32B", params: "32B", effectiveB: 32, tier: "good", emoji: "🔴" },
+  { id: "groq-gpt-oss-20b", provider: "Groq", label: "GPT-OSS 20B", params: "20B", effectiveB: 20, tier: "limited", emoji: "🔴" },
+  { id: "groq-fast", provider: "Groq", label: "Llama 3.1 8B", params: "8B", effectiveB: 8, tier: "caution", emoji: "🔴" },
   // Mistral
-  { id: "mistral", provider: "Mistral", label: "Mistral Small 4", params: "~24B", tier: "good", emoji: "🟠" },
-  { id: "mistral-nemo", provider: "Mistral", label: "Mistral Nemo 12B", params: "12B", tier: "limited", emoji: "🟠" },
-  { id: "mistral-pixtral", provider: "Mistral", label: "Pixtral 12B", params: "12B", tier: "limited", emoji: "🟠" },
+  { id: "mistral", provider: "Mistral", label: "Mistral Small 4", params: "~24B", effectiveB: 24, tier: "good", emoji: "🟠" },
+  { id: "mistral-nemo", provider: "Mistral", label: "Mistral Nemo 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
+  { id: "mistral-pixtral", provider: "Mistral", label: "Pixtral 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
   // OpenRouter
-  { id: "or-auto", provider: "OpenRouter", label: "Auto (best free)", params: "varies", tier: "good", emoji: "🟣" },
-  { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", tier: "good", emoji: "🟣" },
-  { id: "or-llama4-scout", provider: "OpenRouter", label: "Llama 4 Scout", params: "17B×16E", tier: "good", emoji: "🟣" },
-  { id: "or-deepseek-r1", provider: "OpenRouter", label: "DeepSeek R1", params: "671B MoE", tier: "good", emoji: "🟣" },
-  { id: "or-llama32v", provider: "OpenRouter", label: "Llama 3.2 11B", params: "11B", tier: "limited", emoji: "🟣" },
-  { id: "or-qwen-vl", provider: "OpenRouter", label: "Qwen 2.5 VL 3B", params: "3B", tier: "caution", emoji: "🟣" },
+  { id: "or-auto", provider: "OpenRouter", label: "Auto (best free)", params: "varies", effectiveB: 50, tier: "good", emoji: "🟣" },
+  { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", effectiveB: 31, tier: "good", emoji: "🟣" },
+  { id: "or-llama4-scout", provider: "OpenRouter", label: "Llama 4 Scout", params: "17B×16E", effectiveB: 109, tier: "good", emoji: "🟣" },
+  { id: "or-deepseek-r1", provider: "OpenRouter", label: "DeepSeek R1", params: "671B MoE", effectiveB: 671, tier: "good", emoji: "🟣" },
+  { id: "or-llama32v", provider: "OpenRouter", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟣" },
+  { id: "or-qwen-vl", provider: "OpenRouter", label: "Qwen 2.5 VL 3B", params: "3B", effectiveB: 3, tier: "caution", emoji: "🟣" },
   // HuggingFace
-  { id: "hf-qwen-vl72b", provider: "HuggingFace", label: "Qwen 2.5 VL 72B", params: "72B", tier: "good", emoji: "🟡" },
-  { id: "hf-qwen-vl7b", provider: "HuggingFace", label: "Qwen 2.5 VL 7B", params: "7B", tier: "caution", emoji: "🟡" },
-  { id: "hf-llama32v", provider: "HuggingFace", label: "Llama 3.2 11B", params: "11B", tier: "limited", emoji: "🟡" },
+  { id: "hf-qwen-vl72b", provider: "HuggingFace", label: "Qwen 2.5 VL 72B", params: "72B", effectiveB: 72, tier: "good", emoji: "🟡" },
+  { id: "hf-qwen-vl7b", provider: "HuggingFace", label: "Qwen 2.5 VL 7B", params: "7B", effectiveB: 7, tier: "caution", emoji: "🟡" },
+  { id: "hf-llama32v", provider: "HuggingFace", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟡" },
   // Cerebras
-  { id: "cerebras-qwen235", provider: "Cerebras", label: "Qwen 3 235B MoE", params: "235B", tier: "flagship", emoji: "⚡" },
-  { id: "cerebras-gpt-oss", provider: "Cerebras", label: "GPT-OSS 120B", params: "120B", tier: "recommended", emoji: "⚡" },
-  { id: "cerebras-glm", provider: "Cerebras", label: "GLM 4.7", params: "~9B", tier: "good", emoji: "⚡" },
-  { id: "cerebras-llama8b", provider: "Cerebras", label: "Llama 3.1 8B", params: "8B", tier: "caution", emoji: "⚡" },
+  { id: "cerebras-qwen235", provider: "Cerebras", label: "Qwen 3 235B MoE", params: "235B", effectiveB: 235, tier: "flagship", emoji: "⚡" },
+  { id: "cerebras-gpt-oss", provider: "Cerebras", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "recommended", emoji: "⚡" },
+  { id: "cerebras-glm", provider: "Cerebras", label: "GLM 4.7", params: "~9B", effectiveB: 9, tier: "good", emoji: "⚡" },
+  { id: "cerebras-llama8b", provider: "Cerebras", label: "Llama 3.1 8B", params: "8B", effectiveB: 8, tier: "caution", emoji: "⚡" },
   // NVIDIA
-  { id: "nvidia-maverick", provider: "NVIDIA", label: "Llama 4 Maverick", params: "17B×128E", tier: "good", emoji: "🟢" },
-  { id: "nvidia-llama32-90b", provider: "NVIDIA", label: "Llama 3.2 90B", params: "90B", tier: "good", emoji: "🟢" },
-  { id: "nvidia-nemotron", provider: "NVIDIA", label: "Nemotron Super 49B", params: "49B", tier: "good", emoji: "🟢" },
-  { id: "nvidia-llama32-11b", provider: "NVIDIA", label: "Llama 3.2 11B", params: "11B", tier: "limited", emoji: "🟢" },
+  { id: "nvidia-maverick", provider: "NVIDIA", label: "Llama 4 Maverick", params: "17B×128E", effectiveB: 400, tier: "good", emoji: "🟢" },
+  { id: "nvidia-llama32-90b", provider: "NVIDIA", label: "Llama 3.2 90B", params: "90B", effectiveB: 90, tier: "good", emoji: "🟢" },
+  { id: "nvidia-nemotron", provider: "NVIDIA", label: "Nemotron Super 49B", params: "49B", effectiveB: 49, tier: "good", emoji: "🟢" },
+  { id: "nvidia-llama32-11b", provider: "NVIDIA", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟢" },
   // GitHub
-  { id: "github-gpt5", provider: "GitHub", label: "GPT-5", params: "~1T+", tier: "flagship", emoji: "⬛" },
-  { id: "github-gpt5-mini", provider: "GitHub", label: "GPT-5 Mini", params: "~200B+", tier: "recommended", emoji: "⬛" },
-  { id: "github-gpt4o", provider: "GitHub", label: "GPT-4o", params: "~200B+", tier: "recommended", emoji: "⬛" },
-  { id: "github-gpt4o-mini", provider: "GitHub", label: "GPT-4o Mini", params: "~8B+", tier: "good", emoji: "⬛" },
-  { id: "github-o4-mini", provider: "GitHub", label: "o4-mini", params: "~100B+", tier: "good", emoji: "⬛" },
-  { id: "github-o3-mini", provider: "GitHub", label: "o3-mini", params: "~100B+", tier: "good", emoji: "⬛" },
-  { id: "github-phi4", provider: "GitHub", label: "Phi-4", params: "14B", tier: "limited", emoji: "⬛" },
-  { id: "github-phi4-mm", provider: "GitHub", label: "Phi-4 Multimodal", params: "14B", tier: "limited", emoji: "⬛" },
-  { id: "github-llama70", provider: "GitHub", label: "Llama 3.3 70B", params: "70B", tier: "good", emoji: "⬛" },
-  { id: "github-phi4-mini", provider: "GitHub", label: "Phi-4 Mini", params: "3.8B", tier: "caution", emoji: "⬛" },
-  { id: "github-gpt5-nano", provider: "GitHub", label: "GPT-5 Nano", params: "~8B", tier: "limited", emoji: "⬛" },
+  { id: "github-gpt5", provider: "GitHub", label: "GPT-5", params: "~1T+", effectiveB: 1000, tier: "flagship", emoji: "⬛" },
+  { id: "github-gpt5-mini", provider: "GitHub", label: "GPT-5 Mini", params: "~200B+", effectiveB: 200, tier: "recommended", emoji: "⬛" },
+  { id: "github-gpt4o", provider: "GitHub", label: "GPT-4o", params: "~200B+", effectiveB: 200, tier: "recommended", emoji: "⬛" },
+  { id: "github-gpt4o-mini", provider: "GitHub", label: "GPT-4o Mini", params: "~8B+", effectiveB: 8, tier: "good", emoji: "⬛" },
+  { id: "github-o4-mini", provider: "GitHub", label: "o4-mini", params: "~100B+", effectiveB: 100, tier: "good", emoji: "⬛" },
+  { id: "github-o3-mini", provider: "GitHub", label: "o3-mini", params: "~100B+", effectiveB: 100, tier: "good", emoji: "⬛" },
+  { id: "github-phi4", provider: "GitHub", label: "Phi-4", params: "14B", effectiveB: 14, tier: "limited", emoji: "⬛" },
+  { id: "github-phi4-mm", provider: "GitHub", label: "Phi-4 Multimodal", params: "14B", effectiveB: 14, tier: "limited", emoji: "⬛" },
+  { id: "github-llama70", provider: "GitHub", label: "Llama 3.3 70B", params: "70B", effectiveB: 70, tier: "good", emoji: "⬛" },
+  { id: "github-phi4-mini", provider: "GitHub", label: "Phi-4 Mini", params: "3.8B", effectiveB: 3.8, tier: "caution", emoji: "⬛" },
+  { id: "github-gpt5-nano", provider: "GitHub", label: "GPT-5 Nano", params: "~8B", effectiveB: 8, tier: "limited", emoji: "⬛" },
 ];
 
 // ─── Feature / Button definitions ───────────────────────────────────
@@ -326,22 +328,17 @@ function getModelRatingForFeature(model, feature) {
   else if (tier === "limited") base = 2;
   else base = 1; // caution
 
-  // Penalty for small models on complex features
+  // Penalty for small models on complex features (uses numeric effectiveB)
   if (minModel === "70B+") {
     if (tier === "caution") return { rating: 1, badge: "avoid" };
     if (tier === "limited") return { rating: 2, badge: "ok" };
-    if (tier === "good") {
-      // Check if model has enough params
-      const p = model.params;
-      if (p.includes("3B") || p.includes("7B") || p.includes("8B") || p.includes("11B") || p.includes("12B") || p.includes("14B") || p.includes("20B")) {
-        return { rating: 2, badge: "ok" };
-      }
+    if (tier === "good" && model.effectiveB < 70) {
+      return { rating: 2, badge: "ok" };
     }
   } else if (minModel === "30B+") {
     if (tier === "caution") return { rating: 1, badge: "avoid" };
     if (tier === "limited") {
-      const p = model.params;
-      if (p.includes("3B") || p.includes("3.8")) return { rating: 1, badge: "avoid" };
+      if (model.effectiveB < 10) return { rating: 1, badge: "avoid" };
       return { rating: 2, badge: "ok" };
     }
   }
