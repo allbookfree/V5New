@@ -1,6 +1,8 @@
 // ============================================================
 // MODEL REGISTRY — Verified May 2026
 // All model IDs confirmed against official provider documentation.
+// GitHub Models: migrated from deprecated Azure endpoint to models.github.ai
+// OpenRouter: free models refreshed from openrouter.ai/collections/free-models
 // ============================================================
 
 export const MODEL_IDS = {
@@ -12,12 +14,14 @@ export const MODEL_IDS = {
 
   // ── Groq (console.groq.com/docs/models) ────────────────────────────────
   // Production: llama-3.1-8b-instant, llama-3.3-70b-versatile, gpt-oss-120b, gpt-oss-20b
-  // Preview:    llama-4-scout (vision), qwen3-32b
+  // Preview:    llama-4-scout (vision), llama-4-maverick, qwen3-32b, kimi-k2-instruct
   groq: "llama-3.3-70b-versatile",
   "groq-fast": "llama-3.1-8b-instant",
   "groq-gpt-oss": "openai/gpt-oss-120b",
   "groq-gpt-oss-20b": "openai/gpt-oss-20b",
   "groq-qwen3": "qwen/qwen3-32b",
+  "groq-maverick": "meta-llama/llama-4-maverick-17b-128e-instruct",
+  "groq-kimi": "moonshotai/kimi-k2-instruct",
 
   // ── Mistral (docs.mistral.ai) ───────────────────────────────────────────
   // Free experiment tier: mistral-small-latest (Small 4, vision), open-mistral-nemo, pixtral-12b-latest
@@ -25,13 +29,14 @@ export const MODEL_IDS = {
   "mistral-pixtral": "pixtral-12b-latest",
   "mistral-nemo": "open-mistral-nemo",
 
-  // ── OpenRouter (openrouter.ai — :free tagged models) ───────────────────
-  openrouter: "openrouter/auto",
-  "or-auto": "openrouter/auto",
+  // ── OpenRouter (openrouter.ai — verified free models May 2026) ────────
+  // Models confirmed from openrouter.ai/collections/free-models
+  openrouter: "openrouter/free",
+  "or-auto": "openrouter/free",
   "or-gemma4-31b": "google/gemma-4-31b-it:free",
-  "or-llama32v": "meta-llama/llama-3.2-11b-vision-instruct:free",
-  "or-llama4-scout": "meta-llama/llama-4-scout:free",
-  "or-qwen-vl": "qwen/qwen2.5-vl-3b-instruct:free",
+  "or-gemma4-26b": "google/gemma-4-26b-a4b-it:free",
+  "or-nemotron-super": "nvidia/nemotron-3-super-120b-a12b:free",
+  "or-gpt-oss": "openai/gpt-oss-120b:free",
   "or-deepseek-r1": "deepseek/deepseek-r1:free",
 
   // ── HuggingFace (Inference Providers) ──────────────────────────────────
@@ -61,8 +66,9 @@ export const MODEL_IDS = {
   "nvidia-llama32-90b": "meta/llama-3.2-90b-vision-instruct",
   "nvidia-nemotron": "nvidia/llama-3.3-nemotron-super-49b-v1",
 
-  // ── GitHub Models (github.com/marketplace/models/catalog — PAT) ────────
-  // Verified from live catalog page. Vision = image-capable via Azure inference endpoint.
+  // ── GitHub Models (models.github.ai — PAT) ───────────────────────────
+  // Azure endpoint (models.inference.ai.azure.com) deprecated July 2025, removed Oct 2025.
+  // Now uses models.github.ai/inference/chat/completions
   github: "gpt-4o",
   "github-gpt4o": "gpt-4o",
   "github-gpt4o-mini": "gpt-4o-mini",
@@ -78,13 +84,13 @@ export const MODEL_IDS = {
 };
 
 export const OR_MODEL_MAP = {
-  // OpenRouter auto-router — self-heals when free models churn
-  "or-auto": "openrouter/auto",
-  // Pinned stable free picks
+  // OpenRouter free router — auto-selects from available free models
+  "or-auto": "openrouter/free",
+  // Pinned stable free picks (verified May 2026)
   "or-gemma4-31b": "google/gemma-4-31b-it:free",
-  "or-llama32v": "meta-llama/llama-3.2-11b-vision-instruct:free",
-  "or-llama4-scout": "meta-llama/llama-4-scout:free",
-  "or-qwen-vl": "qwen/qwen2.5-vl-3b-instruct:free",
+  "or-gemma4-26b": "google/gemma-4-26b-a4b-it:free",
+  "or-nemotron-super": "nvidia/nemotron-3-super-120b-a12b:free",
+  "or-gpt-oss": "openai/gpt-oss-120b:free",
   "or-deepseek-r1": "deepseek/deepseek-r1:free",
 };
 
@@ -99,17 +105,19 @@ export const MODEL_LABELS = {
   "groq-gpt-oss": "GPT-OSS 120B (Groq)",
   "groq-gpt-oss-20b": "GPT-OSS 20B (Groq)",
   "groq-qwen3": "Qwen 3 32B (Groq)",
+  "groq-maverick": "Llama 4 Maverick (Groq)",
+  "groq-kimi": "Kimi K2 (Groq)",
   // Mistral
   mistral: "Mistral Small 4 (Vision)",
   "mistral-pixtral": "Pixtral 12B (Vision)",
   "mistral-nemo": "Mistral Nemo 12B",
-  // OpenRouter
+  // OpenRouter (verified free May 2026)
   openrouter: "OpenRouter",
-  "or-auto": "OR: Auto (best free)",
+  "or-auto": "OR: Auto (free router)",
   "or-gemma4-31b": "OR: Gemma 4 31B (Vision)",
-  "or-llama32v": "OR: Llama 3.2 11B Vision",
-  "or-llama4-scout": "OR: Llama 4 Scout (Vision)",
-  "or-qwen-vl": "OR: Qwen 2.5 VL 3B (Vision)",
+  "or-gemma4-26b": "OR: Gemma 4 26B A4B (Vision)",
+  "or-nemotron-super": "OR: Nemotron 3 Super 120B",
+  "or-gpt-oss": "OR: GPT-OSS 120B",
   "or-deepseek-r1": "OR: DeepSeek R1 (Reasoning)",
   // HuggingFace
   huggingface: "HuggingFace",
@@ -128,7 +136,7 @@ export const MODEL_LABELS = {
   "nvidia-llama32-11b": "NVIDIA: Llama 3.2 11B Vision",
   "nvidia-llama32-90b": "NVIDIA: Llama 3.2 90B Vision",
   "nvidia-nemotron": "NVIDIA: Nemotron Super 49B",
-  // GitHub Models
+  // GitHub Models (endpoint: models.github.ai)
   github: "GitHub: GPT-4o",
   "github-gpt4o": "GitHub: GPT-4o (Vision)",
   "github-gpt4o-mini": "GitHub: GPT-4o Mini (Vision)",
@@ -152,15 +160,17 @@ export const PROVIDER_KEY_MAP = {
   "groq-gpt-oss": "groq",
   "groq-gpt-oss-20b": "groq",
   "groq-qwen3": "groq",
+  "groq-maverick": "groq",
+  "groq-kimi": "groq",
   // Mistral variants → mistral key
   "mistral-pixtral": "mistral",
   "mistral-nemo": "mistral",
   // OpenRouter variants → openrouter key
   "or-auto": "openrouter",
   "or-gemma4-31b": "openrouter",
-  "or-llama32v": "openrouter",
-  "or-llama4-scout": "openrouter",
-  "or-qwen-vl": "openrouter",
+  "or-gemma4-26b": "openrouter",
+  "or-nemotron-super": "openrouter",
+  "or-gpt-oss": "openrouter",
   "or-deepseek-r1": "openrouter",
   // HuggingFace variants → huggingface key
   "hf-qwen-vl72b": "huggingface",
@@ -205,11 +215,11 @@ export const ALLOWED_MODELS = [
   // Gemini
   "gemini", "gemini-lite", "gemini-pro",
   // Groq
-  "groq", "groq-fast", "groq-gpt-oss", "groq-gpt-oss-20b", "groq-qwen3",
+  "groq", "groq-fast", "groq-gpt-oss", "groq-gpt-oss-20b", "groq-qwen3", "groq-maverick", "groq-kimi",
   // Mistral
   "mistral", "mistral-pixtral", "mistral-nemo",
-  // OpenRouter
-  "openrouter", "or-auto", "or-gemma4-31b", "or-llama32v", "or-llama4-scout", "or-qwen-vl", "or-deepseek-r1",
+  // OpenRouter (verified free May 2026)
+  "openrouter", "or-auto", "or-gemma4-31b", "or-gemma4-26b", "or-nemotron-super", "or-gpt-oss", "or-deepseek-r1",
   // HuggingFace
   "huggingface", "hf-qwen-vl72b", "hf-qwen-vl7b", "hf-llama32v",
   // Cerebras (ONLY these 4 — verified from official docs)
@@ -236,8 +246,9 @@ export const VISION_MODELS = {
     { id: "gemini-2.5-pro",        label: "Gemini 2.5 Pro" },
   ],
   groq: [
-    // Only vision-capable model on Groq (preview)
+    // Scout = vision, Maverick = vision + text (both verified)
     { id: "meta-llama/llama-4-scout-17b-16e-instruct", label: "Llama 4 Scout (Vision)" },
+    { id: "meta-llama/llama-4-maverick-17b-128e-instruct", label: "Llama 4 Maverick (Vision)" },
   ],
   mistral: [
     { id: "pixtral-12b-latest",   label: "Pixtral 12B (Vision)" },
@@ -250,10 +261,8 @@ export const VISION_MODELS = {
   ],
   openrouter: [
     { id: "google/gemma-4-31b-it:free",                          label: "Gemma 4 31B (Vision)" },
-    { id: "meta-llama/llama-3.2-11b-vision-instruct:free",       label: "Llama 3.2 11B Vision" },
-    { id: "meta-llama/llama-4-scout:free",                       label: "Llama 4 Scout (Vision)" },
-    { id: "qwen/qwen2.5-vl-3b-instruct:free",                    label: "Qwen 2.5 VL 3B (Vision)" },
-    // deepseek-r1 is text-only — NOT in vision models
+    { id: "google/gemma-4-26b-a4b-it:free",                      label: "Gemma 4 26B A4B (Vision)" },
+    // deepseek-r1 and nemotron-super are text-only — NOT in vision models
   ],
   nvidia: [
     // Confirmed from build.nvidia.com/explore/vision

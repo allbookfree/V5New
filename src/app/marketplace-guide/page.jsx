@@ -732,6 +732,51 @@ export default function MarketplaceGuidePage() {
           );
         })}
       </div>
+
+      {/* ── AI Provider Comparison for Marketplace Sellers ────────────────── */}
+      <div style={{ marginTop: 40, borderTop: "1px solid var(--border)", paddingTop: 32 }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#6366f115", color: "#6366f1", padding: "4px 12px", borderRadius: 16, fontSize: 11, fontWeight: 600, marginBottom: 8 }}>
+            <TrendingUp size={12} /> {lang === "bn" ? "AI প্রোভাইডার তুলনা" : "AI Provider Comparison"}
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text)", margin: "4px 0" }}>
+            {lang === "bn" ? "কোন AI প্রোভাইডার আপনার জন্য সেরা?" : "Which AI Provider is Best for You?"}
+          </h2>
+          <p style={{ fontSize: 13, color: "var(--text2)", maxWidth: 500, margin: "0 auto" }}>
+            {lang === "bn"
+              ? "আপনার মার্কেটপ্লেস কন্টেন্ট তৈরির জন্য সেরা প্রোভাইডার বেছে নিন"
+              : "Choose the best provider for your marketplace content creation workflow"}
+          </p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12 }}>
+          {[
+            { name: "Gemini", emoji: "🔵", speed: lang === "bn" ? "দ্রুত" : "Fast", cost: lang === "bn" ? "বিনামূল্যে" : "Free", best: lang === "bn" ? "সব ধরনের কন্টেন্ট — সেরা সামগ্রিক পছন্দ" : "All content types — best overall choice", models: "Flash, Flash-Lite, Pro", verdict: lang === "bn" ? "শুরু করার জন্য সেরা" : "Best to start with" },
+            { name: "Groq", emoji: "🔴", speed: lang === "bn" ? "অতি দ্রুত" : "Ultra fast", cost: lang === "bn" ? "বিনামূল্যে" : "Free", best: lang === "bn" ? "বাল্ক কন্টেন্ট তৈরি — দ্রুত ও বড় পরিমাণে" : "Bulk content creation — fast & high volume", models: "7 models incl. Kimi K2, GPT-OSS 120B", verdict: lang === "bn" ? "গতির জন্য সেরা" : "Best for speed" },
+            { name: "GitHub Models", emoji: "⬛", speed: lang === "bn" ? "মাঝারি" : "Moderate", cost: lang === "bn" ? "বিনামূল্যে (PAT)" : "Free (PAT)", best: lang === "bn" ? "উচ্চ মানের কন্টেন্ট — GPT-5, o4-mini রিজনিং" : "High quality content — GPT-5, o4-mini reasoning", models: "GPT-5, GPT-4o, Phi-4, o4-mini", verdict: lang === "bn" ? "মানের জন্য সেরা" : "Best for quality" },
+            { name: "OpenRouter", emoji: "🟣", speed: lang === "bn" ? "পরিবর্তনশীল" : "Variable", cost: lang === "bn" ? "বিনামূল্যে" : "Free", best: lang === "bn" ? "বিভিন্ন মডেল চেষ্টা করা — ২৯+ ফ্রি মডেল" : "Trying various models — 29+ free models", models: "Auto-router, Nemotron, DeepSeek R1", verdict: lang === "bn" ? "বৈচিত্র্যের জন্য সেরা" : "Best for variety" },
+            { name: "Mistral", emoji: "🟠", speed: lang === "bn" ? "দ্রুত" : "Fast", cost: lang === "bn" ? "বিনামূল্যে" : "Free tier", best: lang === "bn" ? "মেটাডাটা জেনারেশন — Pixtral ভিশন মডেল" : "Metadata generation — Pixtral vision model", models: "Small 4, Pixtral 12B, Nemo", verdict: lang === "bn" ? "ভিশনের জন্য সেরা" : "Best for vision" },
+            { name: "NVIDIA NIM", emoji: "🟢", speed: lang === "bn" ? "দ্রুত" : "Fast", cost: lang === "bn" ? "ফ্রি ক্রেডিট" : "Free credits", best: lang === "bn" ? "ভিশন টাস্ক — Maverick, Llama 3.2 Vision" : "Vision tasks — Maverick, Llama 3.2 Vision", models: "Maverick, Llama 3.2, Nemotron", verdict: lang === "bn" ? "ভিশনের জন্য ভালো" : "Good for vision" },
+          ].map((p, i) => (
+            <div key={i} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, padding: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 18 }}>{p.emoji}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text)" }}>{p.name}</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, fontSize: 11, marginBottom: 10 }}>
+                <div><span style={{ color: "var(--text3)" }}>{lang === "bn" ? "গতি:" : "Speed:"}</span> <span style={{ fontWeight: 600, color: "var(--text)" }}>{p.speed}</span></div>
+                <div><span style={{ color: "var(--text3)" }}>{lang === "bn" ? "খরচ:" : "Cost:"}</span> <span style={{ fontWeight: 600, color: "#10b981" }}>{p.cost}</span></div>
+              </div>
+              <div style={{ fontSize: 11, color: "var(--text2)", marginBottom: 6 }}>
+                <span style={{ fontWeight: 600, color: "var(--text3)" }}>{lang === "bn" ? "সেরা:" : "Best for:"}</span> {p.best}
+              </div>
+              <div style={{ fontSize: 10, color: "var(--text3)", marginBottom: 8 }}>{p.models}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#6366f1", background: "#6366f110", padding: "4px 10px", borderRadius: 8, textAlign: "center" }}>
+                {p.verdict}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

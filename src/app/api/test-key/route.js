@@ -127,7 +127,7 @@ async function testNvidia(key) {
 
 async function testGitHub(key) {
   const modelId = MODEL_IDS["github-gpt4o-mini"] || "gpt-4o-mini";
-  const res = await fetchWithTimeout("https://models.inference.ai.azure.com/chat/completions", {
+  const res = await fetchWithTimeout("https://models.github.ai/inference/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
