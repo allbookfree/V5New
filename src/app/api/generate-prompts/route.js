@@ -1423,11 +1423,11 @@ export async function POST(request) {
             continue;
           } catch { continue; }
         }
-        return jsonError(
-          "GitHub Models (Azure) blocked this prompt due to content policy and no fallback provider keys are configured. Add Gemini or Groq keys in Settings.",
-          400,
-          "CONTENT_FILTER"
-        );
+        const triedProviders = fallbacks.filter(fb => fb.keys.length > 0).map(fb => fb.name).join(", ");
+        const msg = triedProviders
+          ? `GitHub Models (Azure) blocked this prompt due to content policy. Fallback providers (${triedProviders}) also failed. Check your keys or try a different prompt.`
+          : "GitHub Models (Azure) blocked this prompt due to content policy and no fallback provider keys are configured. Add Gemini or Groq keys in Settings.";
+        return jsonError(msg, 400, "CONTENT_FILTER");
       }
       return ghResult;
     }
