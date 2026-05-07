@@ -1375,7 +1375,7 @@ export async function POST(request) {
     if (model === "huggingface" || model.startsWith("hf-")) {
       const hfKeys = apiKeysByModel ? sanitizeKeys(apiKeysByModel.huggingface) : validKeys;
       if (!hfKeys.length) return jsonError("No HuggingFace key configured.", 400, "NO_KEYS");
-      const hfModelId = MODEL_IDS[model] || MODEL_IDS["hf-qwen"];
+      const hfModelId = MODEL_IDS[model] || MODEL_IDS["hf-qwen-vl72b"];
       return await handleHuggingFace(hfKeys, systemPrompt, userPrompt, hfModelId);
     }
 

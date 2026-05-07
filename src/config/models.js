@@ -46,6 +46,7 @@ export const MODEL_IDS = {
   // ONLY these 4 models exist on Cerebras. No others. Text-only (no vision).
   // Production: gpt-oss-120b, llama3.1-8b
   // Preview:    qwen-3-235b-a22b-instruct-2507, zai-glm-4.7
+  // ⚠️  llama3.1-8b and qwen-3-235b-a22b-instruct-2507 deprecated 27 May 2026
   cerebras: "gpt-oss-120b",
   "cerebras-gpt-oss": "gpt-oss-120b",
   "cerebras-llama8b": "llama3.1-8b",
@@ -118,8 +119,8 @@ export const MODEL_LABELS = {
   // Cerebras (text-only)
   cerebras: "Cerebras GPT-OSS 120B",
   "cerebras-gpt-oss": "Cerebras: GPT-OSS 120B",
-  "cerebras-llama8b": "Cerebras: Llama 3.1 8B",
-  "cerebras-qwen235": "Cerebras: Qwen 3 235B MoE",
+  "cerebras-llama8b": "Cerebras: Llama 3.1 8B ⚠️",
+  "cerebras-qwen235": "Cerebras: Qwen 3 235B MoE ⚠️",
   "cerebras-glm": "Cerebras: GLM 4.7 (Preview)",
   // NVIDIA NIM
   nvidia: "NVIDIA Llama 4 Maverick",
