@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { VISION_MODELS } from "@/config/models";
+import { PROVIDER_MODELS } from "@/config/providerModels";
 import { readEncryptedSlot, writeEncryptedSlot, readPlaintextSlotSync } from "@/lib/keyVault";
 
 const ApiKeyContext = createContext(null);
@@ -27,9 +28,9 @@ const DEFAULT_SELECTED_MODELS = {
   groq: "groq",
   mistral: "mistral",
   openrouter: "or-auto",
-  huggingface: "hf-qwen",
+  huggingface: "hf-qwen-vl72b",
   cerebras: "cerebras-gpt-oss",
-  nvidia: "nvidia-nemotron",
+  nvidia: "nvidia-maverick",
   github: "github-gpt4o",
 };
 
@@ -44,16 +45,13 @@ const DEFAULT_SELECTED_VISION_MODELS = {
   github: "gpt-4o",
 };
 
-const VALID_TEXT_MODELS = {
-  gemini: ["gemini", "gemini-lite"],
-  groq: ["groq", "groq-fast", "groq-deepseek"],
-  mistral: ["mistral", "mistral-codestral"],
-  openrouter: ["or-auto", "or-gpt-oss", "or-gemma4", "or-minimax", "or-qwen"],
-  huggingface: ["hf-qwen", "hf-mistral"],
-  cerebras: ["cerebras-gpt-oss", "cerebras-glm", "cerebras-qwen235"],
-  nvidia: ["nvidia-nemotron", "nvidia-llama70"],
-  github: ["github-gpt4o", "github-gpt4o-mini", "github-phi4"],
-};
+// Derive valid text model values directly from PROVIDER_MODELS to stay in sync.
+const VALID_TEXT_MODELS = Object.fromEntries(
+  Object.entries(PROVIDER_MODELS).map(([provider, models]) => [
+    provider,
+    models.map((m) => m.value),
+  ])
+);
 
 const VALID_VISION_MODELS = {
   gemini: VISION_MODELS.gemini.map(m => m.id),
@@ -128,15 +126,14 @@ function getInitialSelectedModels() {
     const stored = localStorage.getItem(STORAGE_MODELS_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      const validGemini = VALID_TEXT_MODELS.gemini.includes(parsed.gemini) ? parsed.gemini : "gemini";
-      const validGroq = VALID_TEXT_MODELS.groq.includes(parsed.groq) ? parsed.groq : "groq";
-      const validMistral = VALID_TEXT_MODELS.mistral.includes(parsed.mistral) ? parsed.mistral : "mistral";
-      const validOr = VALID_TEXT_MODELS.openrouter.includes(parsed.openrouter) ? parsed.openrouter : "or-auto";
-      const validHf = VALID_TEXT_MODELS.huggingface.includes(parsed.huggingface) ? parsed.huggingface : "hf-qwen";
-      const validCb = VALID_TEXT_MODELS.cerebras.includes(parsed.cerebras) ? parsed.cerebras : "cerebras-gpt-oss";
-      const validNv = VALID_TEXT_MODELS.nvidia.includes(parsed.nvidia) ? parsed.nvidia : "nvidia-nemotron";
-      const validGh = VALID_TEXT_MODELS.github?.includes(parsed.github) ? parsed.github : "github-gpt4o";
-      return { gemini: validGemini, groq: validGroq, mistral: validMistral, openrouter: validOr, huggingface: validHf, cerebras: validCb, nvidia: validNv, github: validGh };
+      const result = {};
+      for (const provider of Object.keys(DEFAULT_SELECTED_MODELS)) {
+        const valid = VALID_TEXT_MODELS[provider] || [];
+        result[provider] = valid.includes(parsed[provider])
+          ? parsed[provider]
+          : DEFAULT_SELECTED_MODELS[provider];
+      }
+      return result;
     }
   } catch (e) {
     console.warn("Could not parse stored selected-text-model preferences; using defaults.", e);
