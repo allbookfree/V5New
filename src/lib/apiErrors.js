@@ -15,6 +15,7 @@ const ERROR_CODE_KEYS = {
   ALL_KEYS_RATE_LIMITED: "errors.allKeysRateLimit",
   MODEL_INVALID_JSON: "errors.invalidModelData",
   MODEL_INCOMPLETE_OUTPUT: "errors.incompleteOutput",
+  CONTENT_FILTER: "errors.contentFilter",
   METADATA_ANALYSIS_FAILED: "errors.metadataFailed",
   INTERNAL_ERROR: "errors.tempError",
 };
@@ -47,6 +48,7 @@ const ERROR_MESSAGES_EN = {
   ALL_KEYS_RATE_LIMITED: "All keys hit rate limits. Try again later.",
   MODEL_INVALID_JSON: "Model returned invalid data. Try again.",
   MODEL_INCOMPLETE_OUTPUT: "Output was incomplete. Try again.",
+  CONTENT_FILTER: "GitHub Models (Azure) blocked this prompt due to content policy. Use a different provider.",
   METADATA_ANALYSIS_FAILED: "Could not generate metadata. Try again.",
   INTERNAL_ERROR: "A temporary error occurred. Try again.",
 };

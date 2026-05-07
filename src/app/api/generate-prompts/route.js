@@ -2079,9 +2079,22 @@ async function handleGitHub(keys, systemPrompt, userPrompt, modelId) {
       }
       if (!res.ok) {
         let errMsg = `GitHub Models error (${res.status})`;
-        try { const e = await res.json(); if (e?.error?.message) errMsg = e.error.message; } catch { }
+        let errCode = "PROVIDER_ERROR";
+        try {
+          const e = await res.json();
+          if (e?.error?.message) errMsg = e.error.message;
+          // Azure content filter — retrying with another key won't help;
+          // the same prompt will be rejected every time. Return immediately.
+          if (e?.error?.code === "content_filter") {
+            return jsonError(
+              "GitHub Models (Azure) blocked this request due to its content policy. Try a different provider (Gemini, Groq, Mistral, OpenRouter) or simplify your prompt.",
+              400,
+              "CONTENT_FILTER"
+            );
+          }
+        } catch { }
         errMsg = extractRetryAfter(res, errMsg);
-        lastErr = new AppError(shortenError(errMsg), res.status >= 500 ? 502 : 400, "PROVIDER_ERROR");
+        lastErr = new AppError(shortenError(errMsg), res.status >= 500 ? 502 : 400, errCode);
         await sleepJitter(1000);
         continue;
       }
