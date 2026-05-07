@@ -26,6 +26,7 @@ const PROVIDER_LIMITS = {
   huggingface:{ rpm: 30, rpd: 1000,  label: "HuggingFace" },
   cerebras:   { rpm: 30, rpd: 14400, label: "Cerebras" },
   nvidia:     { rpm: 60, rpd: 200,   label: "NVIDIA NIM" },
+  github:     { rpm: 10, rpd: 1000,  label: "GitHub Models" },
 };
 
 function getTodayKey() {
@@ -95,7 +96,7 @@ export function isProviderAvailable(provider) {
 export function getBestAvailableProvider(preferredProvider, configuredProviders) {
   if (isProviderAvailable(preferredProvider)) return preferredProvider;
 
-  const priority = ["gemini", "groq", "mistral", "openrouter", "huggingface"];
+  const priority = ["gemini", "groq", "mistral", "openrouter", "huggingface", "cerebras", "nvidia", "github"];
   for (const p of priority) {
     if (p !== preferredProvider && configuredProviders.includes(p) && isProviderAvailable(p)) {
       return p;

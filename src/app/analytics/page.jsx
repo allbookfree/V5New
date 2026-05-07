@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
   const typeIcons = { image: ImageIcon, vector: Palette, video: Video };
   const typeColors = { image: "#4f46e5", vector: "#10b981", video: "#f59e0b" };
 
-  const ALL_PROVIDERS = ["gemini", "groq", "mistral", "openrouter", "huggingface"];
+  const ALL_PROVIDERS = ["gemini", "groq", "mistral", "openrouter", "huggingface", "cerebras", "nvidia", "github"];
   const activeVendors = ALL_PROVIDERS.filter(p => getAllKeys(p).length > 0).length;
   const totalProviders = ALL_PROVIDERS.length;
 

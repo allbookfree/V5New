@@ -31,6 +31,7 @@ const PROVIDERS = [
   { key: "huggingface", label: "HuggingFace", emoji: "🟡", color: "#FFBD59", gradient: "linear-gradient(135deg, #FFBD59 0%, #FF9800 100%)" },
   { key: "cerebras", label: "Cerebras", emoji: "⚡", color: "#EF4444", gradient: "linear-gradient(135deg, #EF4444 0%, #F87171 100%)" },
   { key: "nvidia", label: "NVIDIA NIM", emoji: "🟢", color: "#22C55E", gradient: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)" },
+  { key: "github", label: "GitHub Models", emoji: "🔘", color: "#6E5494", gradient: "linear-gradient(135deg, #6E5494 0%, #8B949E 100%)" },
 ];
 
 /* ─── Helpers ─────────────────────────────────────────────────────── */

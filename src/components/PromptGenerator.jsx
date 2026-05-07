@@ -212,7 +212,7 @@ export default function PromptGenerator({
   );
   const actualModelKey = useMemo(() => {
     if (model === "openrouter") return selectedModels?.openrouter || "or-auto";
-    if (model === "huggingface") return selectedModels?.huggingface || "hf-qwen";
+    if (model === "huggingface") return selectedModels?.huggingface || "hf-qwen-vl72b";
     return (selectedModels && selectedModels[providerInfo.apiKey]) || providerInfo.apiKey;
   }, [model, selectedModels, providerInfo]);
 
@@ -486,7 +486,7 @@ Keep the same subject and core idea, but make the new version more specific, mor
         const configuredProviders = Object.keys(apiKeysByModel).filter(p => apiKeysByModel[p]?.some(k => k.trim()));
         const bestProvider = getBestAvailableProvider(effectiveProviderKey, configuredProviders);
         if (bestProvider !== effectiveProviderKey) {
-          const defaultModels = { gemini: "gemini", groq: "groq", mistral: "mistral", openrouter: "or-auto", huggingface: "hf-qwen" };
+          const defaultModels = { gemini: "gemini", groq: "groq", mistral: "mistral", openrouter: "or-auto", huggingface: "hf-qwen-vl72b", cerebras: "cerebras-gpt-oss", nvidia: "nvidia-maverick", github: "github-gpt4o" };
           effectiveModel = selectedModels?.[bestProvider] || defaultModels[bestProvider] || bestProvider;
           const providerLabel = PROVIDERS_UI.find(p => p.apiKey === bestProvider)?.label || bestProvider;
           setRotationNotice(`Auto-switched to ${providerLabel} (${effectiveProviderKey} limit reached)`);
