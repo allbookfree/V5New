@@ -4,7 +4,7 @@
  * This route sends a tiny real generation request to verify that
  * a key is actually working for prompt generation, not just listing models.
  *
- * Body: { provider: "gemini"|"groq"|"mistral"|"openrouter"|"huggingface"|"cerebras"|"nvidia", key: "..." }
+ * Body: { provider: "gemini"|"groq"|"mistral"|"openrouter"|"huggingface"|"cerebras"|"nvidia"|"github", key: "..." }
  * Response: { status: "working"|"invalid"|"rate"|"error", message: "..." }
  */
 
@@ -82,7 +82,7 @@ async function testOpenRouter(key) {
 }
 
 async function testHuggingFace(key) {
-  const modelId = MODEL_IDS["hf-qwen"] || "Qwen/Qwen2.5-72B-Instruct";
+  const modelId = MODEL_IDS["hf-qwen-vl72b"] || "Qwen/Qwen2.5-VL-72B-Instruct";
   const res = await fetchWithTimeout(`https://router.huggingface.co/v1/chat/completions`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
@@ -111,10 +111,23 @@ async function testCerebras(key) {
 }
 
 async function testNvidia(key) {
-  // Llama 3.3 70B is the cheapest credit-cost option; using it for the
-  // health check keeps NVIDIA's monthly free credit pool intact.
-  const modelId = MODEL_IDS["nvidia-llama70"] || "meta/llama-3.3-70b-instruct";
+  // Llama 3.2 11B Vision is lightweight and has a free endpoint on build.nvidia.com.
+  const modelId = MODEL_IDS["nvidia-llama32-11b"] || "meta/llama-3.2-11b-vision-instruct";
   const res = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: modelId,
+      messages: [{ role: "user", content: TEST_PROMPT }],
+      max_tokens: 5,
+    }),
+  }, 15000);
+  return res;
+}
+
+async function testGitHub(key) {
+  const modelId = MODEL_IDS["github-gpt4o-mini"] || "gpt-4o-mini";
+  const res = await fetchWithTimeout("https://models.inference.ai.azure.com/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
@@ -180,6 +193,9 @@ export async function POST(request) {
           break;
         case "nvidia":
           res = await testNvidia(key.trim());
+          break;
+        case "github":
+          res = await testGitHub(key.trim());
           break;
         default:
           return Response.json({ status: "error", message: "Unknown provider" }, { status: 200 });

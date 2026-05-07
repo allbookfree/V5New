@@ -60,8 +60,8 @@ export const PROVIDER_MODELS = {
   // ALL text-only. No vision capability whatsoever.
   cerebras: [
     { value: "cerebras-gpt-oss",  label: "GPT-OSS 120B",       info: "📝 Text · Ultra-fast inference" },
-    { value: "cerebras-llama8b",  label: "Llama 3.1 8B",       info: "⚡ Text · Fastest" },
-    { value: "cerebras-qwen235",  label: "Qwen 3 235B MoE",    info: "🧠 Text · Highest quality reasoning" },
+    { value: "cerebras-llama8b",  label: "Llama 3.1 8B",       info: "⚠️ Deprecated 27 May 2026 · Text · Fast" },
+    { value: "cerebras-qwen235",  label: "Qwen 3 235B MoE",    info: "⚠️ Deprecated 27 May 2026 · Text · Reasoning" },
     { value: "cerebras-glm",      label: "GLM 4.7 (Z.ai)",     info: "🧠 Text · Coding + Reasoning" },
   ],
 

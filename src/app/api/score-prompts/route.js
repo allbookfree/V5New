@@ -156,7 +156,7 @@ async function callNvidiaScore(apiKey, systemPrompt, userPrompt, modelKey) {
 }
 
 async function callHuggingFaceScore(apiKey, systemPrompt, userPrompt, modelKey) {
-  const modelId = MODEL_IDS[modelKey] || MODEL_IDS["hf-qwen"] || "Qwen/Qwen2.5-72B-Instruct";
+  const modelId = MODEL_IDS[modelKey] || MODEL_IDS["hf-qwen-vl72b"] || "Qwen/Qwen2.5-VL-72B-Instruct";
   const res = await fetchWithTimeout(
     `https://router.huggingface.co/v1/chat/completions`,
     {
