@@ -797,6 +797,10 @@ async function tryGitHub(keys, mimeType, base64Data, prompt, model, contentType)
         if (res.status === 401 || res.status === 403) {
           return { error: `GitHub Models PAT invalid (${res.status}).`, retry: false };
         }
+        // Azure content filter — retrying won't help, return immediately
+        if (parsed?.error?.code === "content_filter") {
+          return { error: "GitHub Models (Azure) blocked this request due to content policy. Try another provider.", retry: false };
+        }
         if (res.status === 429) { lastErr = "Rate limit"; continue; }
         lastErr = (typeof apiMsg === "string" ? apiMsg : String(apiMsg)).slice(0, 120);
         continue;
