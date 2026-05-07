@@ -300,6 +300,14 @@ export function ApiKeyProvider({ children }) {
         res = await fetch("https://router.huggingface.co/v1/models", {
           headers: { Authorization: `Bearer ${key}` }
         });
+      } else if (provider === "cerebras") {
+        res = await fetch("https://api.cerebras.ai/v1/models", {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+      } else if (provider === "nvidia") {
+        res = await fetch("https://integrate.api.nvidia.com/v1/models", {
+          headers: { Authorization: `Bearer ${key}` }
+        });
       } else if (provider === "github") {
         res = await fetch("https://models.inference.ai.azure.com/models", {
           headers: { Authorization: `Bearer ${key}` }
