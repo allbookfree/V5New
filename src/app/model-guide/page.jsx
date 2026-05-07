@@ -682,6 +682,28 @@ export default function ModelGuidePage() {
           </div>
         );
       })}
+      {/* ── Use Case Recommendations ─────────────────────────────────────── */}
+      <div style={{ marginTop: 32, borderTop: "1px solid var(--border)", paddingTop: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text)", marginBottom: 16 }}>
+          {isBn ? "ব্যবহার অনুসারে সেরা মডেল" : "Best Models by Use Case"}
+        </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 10 }}>
+          {[
+            { useCase: isBn ? "প্রম্পট জেনারেশন (সাধারণ)" : "Prompt Generation (General)", rec: "Gemini 2.5 Flash, GPT-OSS 120B (Groq)", why: isBn ? "দ্রুত, সুষম, বিনামূল্যে" : "Fast, balanced, free" },
+            { useCase: isBn ? "উচ্চ মানের কন্টেন্ট" : "High Quality Content", rec: "Gemini 2.5 Pro, GPT-5 (GitHub)", why: isBn ? "ফ্ল্যাগশিপ মডেল, সর্বোচ্চ মান" : "Flagship models, highest quality" },
+            { useCase: isBn ? "বাল্ক / দ্রুত জেনারেশন" : "Bulk / Fast Generation", rec: "Groq Llama 3.1 8B, Gemini Flash-Lite", why: isBn ? "সর্বোচ্চ গতি, কম লেটেন্সি" : "Maximum speed, lowest latency" },
+            { useCase: isBn ? "ইমেজ মেটাডাটা (ভিশন)" : "Image Metadata (Vision)", rec: "Gemini Flash, Pixtral 12B, GPT-4o", why: isBn ? "ছবি বিশ্লেষণে সেরা" : "Best at image analysis" },
+            { useCase: isBn ? "রিজনিং / কোডিং" : "Reasoning / Coding", rec: "o4-mini (GitHub), DeepSeek R1 (OR), Kimi K2 (Groq)", why: isBn ? "চিন্তাশীল মডেল, জটিল কাজ" : "Thinking models, complex tasks" },
+            { useCase: isBn ? "বহুভাষী কন্টেন্ট" : "Multilingual Content", rec: "Mistral Nemo, Qwen 3 32B (Groq)", why: isBn ? "বহু ভাষা সাপোর্ট" : "Broad language support" },
+          ].map((item, i) => (
+            <div key={i} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 10, padding: "12px 14px" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text)", marginBottom: 4 }}>{item.useCase}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#6366f1", marginBottom: 4 }}>{item.rec}</div>
+              <div style={{ fontSize: 10, color: "var(--text3)" }}>{item.why}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
