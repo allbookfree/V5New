@@ -1409,12 +1409,18 @@ export async function POST(request) {
         for (const fb of fallbacks) {
           if (!fb.keys.length) continue;
           try {
-            if (fb.name === "openrouter") return await handleOpenRouter(fb.keys, systemPrompt, userPrompt, null);
-            if (fb.name === "huggingface") return await handleHuggingFace(fb.keys, systemPrompt, userPrompt, MODEL_IDS["hf-qwen-vl72b"]);
-            if (fb.name === "cerebras") return await handleCerebras(fb.keys, systemPrompt, userPrompt, MODEL_IDS["cerebras-gpt-oss"]);
-            const res = await fb.fn(fb.keys[0]);
-            const text = res.body ? await res.text() : "";
-            if (text) return createTextResponse(text, `${fb.name}:fallback`);
+            let result;
+            if (fb.name === "openrouter") result = await handleOpenRouter(fb.keys, systemPrompt, userPrompt, null);
+            else if (fb.name === "huggingface") result = await handleHuggingFace(fb.keys, systemPrompt, userPrompt, MODEL_IDS["hf-qwen-vl72b"]);
+            else if (fb.name === "cerebras") result = await handleCerebras(fb.keys, systemPrompt, userPrompt, MODEL_IDS["cerebras-gpt-oss"]);
+            else {
+              const res = await fb.fn(fb.keys[0]);
+              const text = res.body ? await res.text() : "";
+              if (text) return createTextResponse(text, `${fb.name}:fallback`);
+              continue;
+            }
+            if (result.ok) return result;
+            continue;
           } catch { continue; }
         }
         return jsonError(
