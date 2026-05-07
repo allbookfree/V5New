@@ -987,6 +987,22 @@ export async function POST(request) {
       const model = getSelectedVisionModel(selectedModels, "github", "gpt-4o");
       const r = await tryGitHub(githubKeys, mimeType, base64Data, prompt, model, contentType);
       if (r.ok) return Response.json({ ...r.data, provider: r.provider });
+      // Auto-fallback on Azure content filter — try other vision providers
+      if (r.error && r.error.includes("content policy")) {
+        const visionFallbacks = [
+          { keys: geminiKeys, fn: () => tryGeminiReliable(geminiKeys, mimeType, base64Data, prompt, "gemini-2.5-flash", contentType) },
+          { keys: groqKeys, fn: () => tryGroq(groqKeys, mimeType, base64Data, prompt, "meta-llama/llama-4-scout-17b-16e-instruct", contentType) },
+          { keys: mistralKeys, fn: () => tryMistral(mistralKeys, mimeType, base64Data, prompt, "pixtral-12b-latest", contentType) },
+          { keys: hfKeys, fn: () => tryHuggingFace(hfKeys, mimeType, base64Data, prompt, "Qwen/Qwen2.5-VL-72B-Instruct", contentType) },
+        ];
+        for (const fb of visionFallbacks) {
+          if (!fb.keys.length) continue;
+          try {
+            const fr = await fb.fn();
+            if (fr.ok) return Response.json({ ...fr.data, provider: fr.provider });
+          } catch { continue; }
+        }
+      }
       return jsonError(r.error || "GitHub Models failed.", 502, "PROVIDER_ERROR");
     }
     return jsonError("Unsupported metadata provider.", 400, "VALIDATION_ERROR");

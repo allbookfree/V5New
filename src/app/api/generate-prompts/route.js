@@ -1394,7 +1394,36 @@ export async function POST(request) {
     if (model === "github" || model.startsWith("github-")) {
       const ghKeys = apiKeysByModel ? sanitizeKeys(apiKeysByModel.github) : validKeys;
       if (!ghKeys.length) return jsonError("No GitHub Models key configured.", 400, "NO_KEYS");
-      return await handleGitHub(ghKeys, systemPrompt, userPrompt, MODEL_IDS[model] || MODEL_IDS["github-gpt4o-mini"]);
+      const ghResult = await handleGitHub(ghKeys, systemPrompt, userPrompt, MODEL_IDS[model] || MODEL_IDS["github-gpt4o-mini"]);
+      // Auto-fallback: if Azure content filter blocked the request, try
+      // other providers silently so the user gets a result instead of an error.
+      if (ghResult?.__contentFiltered) {
+        const fallbacks = [
+          { name: "gemini", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.gemini) : [], fn: (k) => callGemini(k, systemPrompt, userPrompt, MODEL_IDS["gemini"]) },
+          { name: "groq", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.groq) : [], fn: (k) => callGroq(k, systemPrompt, userPrompt, MODEL_IDS["groq"]) },
+          { name: "mistral", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.mistral) : [], fn: (k) => callMistral(k, systemPrompt, userPrompt) },
+          { name: "openrouter", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.openrouter) : [], fn: null },
+          { name: "huggingface", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.huggingface) : [], fn: null },
+          { name: "cerebras", keys: apiKeysByModel ? sanitizeKeys(apiKeysByModel.cerebras) : [], fn: null },
+        ];
+        for (const fb of fallbacks) {
+          if (!fb.keys.length) continue;
+          try {
+            if (fb.name === "openrouter") return await handleOpenRouter(fb.keys, systemPrompt, userPrompt, null);
+            if (fb.name === "huggingface") return await handleHuggingFace(fb.keys, systemPrompt, userPrompt, MODEL_IDS["hf-qwen-vl72b"]);
+            if (fb.name === "cerebras") return await handleCerebras(fb.keys, systemPrompt, userPrompt, MODEL_IDS["cerebras-gpt-oss"]);
+            const res = await fb.fn(fb.keys[0]);
+            const text = res.body ? await res.text() : "";
+            if (text) return createTextResponse(text, `${fb.name}:fallback`);
+          } catch { continue; }
+        }
+        return jsonError(
+          "GitHub Models (Azure) blocked this prompt due to content policy and no fallback provider keys are configured. Add Gemini or Groq keys in Settings.",
+          400,
+          "CONTENT_FILTER"
+        );
+      }
+      return ghResult;
     }
 
     // Static queue from the user's primary model + provider-specific
@@ -2086,11 +2115,7 @@ async function handleGitHub(keys, systemPrompt, userPrompt, modelId) {
           // Azure content filter — retrying with another key won't help;
           // the same prompt will be rejected every time. Return immediately.
           if (e?.error?.code === "content_filter") {
-            return jsonError(
-              "GitHub Models (Azure) blocked this request due to its content policy. Try a different provider (Gemini, Groq, Mistral, OpenRouter) or simplify your prompt.",
-              400,
-              "CONTENT_FILTER"
-            );
+            return { __contentFiltered: true };
           }
         } catch { }
         errMsg = extractRetryAfter(res, errMsg);
