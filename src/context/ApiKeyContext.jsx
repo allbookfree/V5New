@@ -309,8 +309,10 @@ export function ApiKeyProvider({ children }) {
           headers: { Authorization: `Bearer ${key}` }
         });
       } else if (provider === "github") {
-        res = await fetch("https://models.inference.ai.azure.com/models", {
-          headers: { Authorization: `Bearer ${key}` }
+        res = await fetch("https://models.github.ai/inference/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+          body: JSON.stringify({ model: "gpt-4o-mini", messages: [{ role: "user", content: "hi" }], max_tokens: 1 }),
         });
       } else {
         setTestResult(prev => ({ ...prev, [id]: { success: false, message: `Unsupported provider: ${provider}` } }));

@@ -434,8 +434,9 @@ async function tryGeminiReliable(geminiKeys, mimeType, base64Data, prompt, model
 // Fallback list only — actual models fetched dynamically from the API
 const OR_FALLBACK_MODELS = [
   "openrouter/free",
-  "google/gemma-3-27b-it:free",
-  "nvidia/nemotron-nano-12b-v2-vl:free",
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
 ];
 
 const _orModelCache = new Map(); // key → { models, ts }
@@ -768,7 +769,7 @@ async function tryGitHub(keys, mimeType, base64Data, prompt, model, contentType)
             { type: "text", text: prompt }
           ];
 
-      const res = await fetchWithTimeout("https://models.inference.ai.azure.com/chat/completions", {
+      const res = await fetchWithTimeout("https://models.github.ai/inference/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

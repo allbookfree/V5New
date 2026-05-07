@@ -50,7 +50,9 @@ const MODELS = [
   { id: "gemini", provider: "Gemini", label: "Gemini 2.5 Flash", params: "~300B+", effectiveB: 300, tier: "recommended", emoji: "🔵" },
   { id: "gemini-lite", provider: "Gemini", label: "Gemini 2.5 Flash-Lite", params: "~100B+", effectiveB: 100, tier: "good", emoji: "🔵" },
   // Groq
+  { id: "groq-kimi", provider: "Groq", label: "Kimi K2", params: "1T+ MoE", effectiveB: 200, tier: "recommended", emoji: "🔴" },
   { id: "groq-gpt-oss", provider: "Groq", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "recommended", emoji: "🔴" },
+  { id: "groq-maverick", provider: "Groq", label: "Llama 4 Maverick", params: "17B×128E", effectiveB: 400, tier: "good", emoji: "🔴" },
   { id: "groq", provider: "Groq", label: "Llama 3.3 70B", params: "70B", effectiveB: 70, tier: "good", emoji: "🔴" },
   { id: "groq-qwen3", provider: "Groq", label: "Qwen 3 32B", params: "32B", effectiveB: 32, tier: "good", emoji: "🔴" },
   { id: "groq-gpt-oss-20b", provider: "Groq", label: "GPT-OSS 20B", params: "20B", effectiveB: 20, tier: "limited", emoji: "🔴" },
@@ -59,15 +61,13 @@ const MODELS = [
   { id: "mistral", provider: "Mistral", label: "Mistral Small 4", params: "~24B", effectiveB: 24, tier: "good", emoji: "🟠" },
   { id: "mistral-nemo", provider: "Mistral", label: "Mistral Nemo 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
   { id: "mistral-pixtral", provider: "Mistral", label: "Pixtral 12B", params: "12B", effectiveB: 12, tier: "limited", emoji: "🟠" },
-  // OpenRouter
-  // or-auto: OpenRouter picks the best free model dynamically — actual model may vary per request.
-  // effectiveB=50 is an estimate; real performance depends on which model OR selects.
-  { id: "or-auto", provider: "OpenRouter", label: "Auto (best free)", params: "varies", effectiveB: 50, tier: "good", emoji: "🟣" },
-  { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", effectiveB: 31, tier: "good", emoji: "🟣" },
-  { id: "or-llama4-scout", provider: "OpenRouter", label: "Llama 4 Scout", params: "17B×16E", effectiveB: 109, tier: "good", emoji: "🟣" },
+  // OpenRouter (verified free models May 2026)
+  { id: "or-auto", provider: "OpenRouter", label: "Auto (free router)", params: "varies", effectiveB: 50, tier: "good", emoji: "🟣" },
   { id: "or-deepseek-r1", provider: "OpenRouter", label: "DeepSeek R1", params: "671B MoE", effectiveB: 671, tier: "good", emoji: "🟣" },
-  { id: "or-llama32v", provider: "OpenRouter", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟣" },
-  { id: "or-qwen-vl", provider: "OpenRouter", label: "Qwen 2.5 VL 3B", params: "3B", effectiveB: 3, tier: "caution", emoji: "🟣" },
+  { id: "or-nemotron-super", provider: "OpenRouter", label: "Nemotron 3 Super 120B", params: "120B MoE", effectiveB: 120, tier: "good", emoji: "🟣" },
+  { id: "or-gpt-oss", provider: "OpenRouter", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "good", emoji: "🟣" },
+  { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", effectiveB: 31, tier: "good", emoji: "🟣" },
+  { id: "or-gemma4-26b", provider: "OpenRouter", label: "Gemma 4 26B A4B", params: "26B MoE", effectiveB: 26, tier: "good", emoji: "🟣" },
   // HuggingFace
   { id: "hf-qwen-vl72b", provider: "HuggingFace", label: "Qwen 2.5 VL 72B", params: "72B", effectiveB: 72, tier: "good", emoji: "🟡" },
   { id: "hf-qwen-vl7b", provider: "HuggingFace", label: "Qwen 2.5 VL 7B", params: "7B", effectiveB: 7, tier: "caution", emoji: "🟡" },

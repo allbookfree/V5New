@@ -1292,15 +1292,15 @@ function buildModelQueue(primaryModel, apiKeysByModel, validKeys) {
 // in getOpenRouterTextModels() returns the freshest free models on every
 // request (5-min cache).  Order = preference when live data unavailable.
 const OR_TEXT_FALLBACK_MODELS = [
-  // OpenRouter's official auto-router routes to the best available free
-  // model in real time — try it first.
+  // OpenRouter's official free router — tries best available free model.
   "openrouter/free",
-  "google/gemma-3-27b-it:free",
+  // Verified free models from openrouter.ai/collections/free-models (May 2026)
+  "nvidia/nemotron-3-super-120b-a12b:free",
   "openai/gpt-oss-120b:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "deepseek/deepseek-chat-v3:free",
+  "google/gemma-4-31b-it:free",
+  "deepseek/deepseek-r1:free",
   "qwen/qwen3-coder:free",
-  "nvidia/nemotron-nano-9b-v2:free",
+  "nvidia/nemotron-3-nano-30b-a3b:free",
 ];
 
 const _orTextCache = { models: null, ts: 0 };
@@ -2086,7 +2086,7 @@ async function handleGitHub(keys, systemPrompt, userPrompt, modelId) {
   let lastErr = null;
   for (const apiKey of keys) {
     try {
-      const res = await fetchWithTimeout("https://models.inference.ai.azure.com/chat/completions", {
+      const res = await fetchWithTimeout("https://models.github.ai/inference/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

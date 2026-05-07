@@ -4,6 +4,7 @@
 // and VISION models (for Metadata Generator).
 // Models that do BOTH appear in both lists.
 // ============================================================
+// Last verified: May 2026
 
 // ─────────────────────────────────────────────────────────────
 // PROVIDER_MODELS — Shown in Settings → Model Version dropdown
@@ -22,11 +23,13 @@ export const PROVIDER_MODELS = {
   // ── Groq ─────────────────────────────────────────────────────
   // Text-only models for prompt generation (Scout is vision-only, shown only in Metadata)
   groq: [
-    { value: "groq",              label: "Llama 3.3 70B",   info: "📝 Production · Best quality text" },
-    { value: "groq-fast",         label: "Llama 3.1 8B",    info: "⚡ Production · Fastest text" },
-    { value: "groq-gpt-oss",      label: "GPT-OSS 120B",    info: "📝 Production · ~500 TPS text" },
-    { value: "groq-gpt-oss-20b",  label: "GPT-OSS 20B",     info: "⚡ Production · Fast text" },
-    { value: "groq-qwen3",        label: "Qwen 3 32B",      info: "🧠 Preview · Reasoning text" },
+    { value: "groq",              label: "Llama 3.3 70B",             info: "📝 Production · Best quality text" },
+    { value: "groq-fast",         label: "Llama 3.1 8B",              info: "⚡ Production · Fastest text" },
+    { value: "groq-gpt-oss",      label: "GPT-OSS 120B",              info: "📝 Production · ~500 TPS text" },
+    { value: "groq-gpt-oss-20b",  label: "GPT-OSS 20B",               info: "⚡ Production · Fast text" },
+    { value: "groq-qwen3",        label: "Qwen 3 32B",                info: "🧠 Preview · Reasoning text" },
+    { value: "groq-maverick",     label: "Llama 4 Maverick 17B×128E", info: "📝 Preview · Vision + Text · MoE" },
+    { value: "groq-kimi",         label: "Kimi K2",                   info: "🧠 Preview · MoE reasoning" },
   ],
 
   // ── Mistral ──────────────────────────────────────────────────
@@ -39,13 +42,14 @@ export const PROVIDER_MODELS = {
   ],
 
   // ── OpenRouter ───────────────────────────────────────────────
+  // Free models verified from openrouter.ai/collections/free-models (May 2026)
   openrouter: [
-    { value: "or-auto",         label: "Auto (best free)",         info: "🤖 OR picks optimal model per request" },
-    { value: "or-gemma4-31b",   label: "Gemma 4 31B",              info: "📝 Text + 👁️ Vision · Google" },
-    { value: "or-llama4-scout", label: "Llama 4 Scout",            info: "📝 Text + 👁️ Vision · Meta" },
-    { value: "or-llama32v",     label: "Llama 3.2 11B Vision",     info: "👁️ Vision · Meta" },
-    { value: "or-qwen-vl",      label: "Qwen 2.5 VL 3B",          info: "👁️ Vision · Lightweight" },
-    { value: "or-deepseek-r1",  label: "DeepSeek R1",              info: "🧠 Reasoning · Text-only" },
+    { value: "or-auto",             label: "Auto (free router)",           info: "🤖 Auto-selects best free model" },
+    { value: "or-gemma4-31b",       label: "Gemma 4 31B",                  info: "📝 Text + 👁️ Vision · Google · Free" },
+    { value: "or-gemma4-26b",       label: "Gemma 4 26B A4B",              info: "📝 Text + 👁️ Vision · Google MoE · Free" },
+    { value: "or-nemotron-super",   label: "Nemotron 3 Super 120B",        info: "📝 Text · NVIDIA MoE · Free" },
+    { value: "or-gpt-oss",          label: "GPT-OSS 120B",                 info: "📝 Text · OpenAI open-source · Free" },
+    { value: "or-deepseek-r1",      label: "DeepSeek R1",                  info: "🧠 Reasoning · Text-only · Free" },
   ],
 
   // ── HuggingFace ──────────────────────────────────────────────
@@ -74,6 +78,7 @@ export const PROVIDER_MODELS = {
   ],
 
   // ── GitHub Models ────────────────────────────────────────────
+  // Endpoint: models.github.ai (Azure endpoint deprecated July 2025)
   github: [
     // Text + Vision capable
     { value: "github-gpt4o",      label: "GPT-4o",              info: "📝 Text + 👁️ Vision · Best quality" },
