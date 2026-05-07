@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, KeyRound, Eye, EyeOff, Save, Shield, ExternalLink, Check, Lock, Loader2, AlertTriangle, Plus, Trash2, CheckCircle, ChevronDown, RotateCcw, BookOpen, Copy, Upload, FileJson, FileText, ChevronRight } from "lucide-react";
+import { X, KeyRound, Eye, EyeOff, Save, Shield, ExternalLink, Check, Lock, Loader2, AlertTriangle, Plus, Trash2, CheckCircle, ChevronDown, RotateCcw, BookOpen, Copy, Upload, Download, FileJson, FileText, ChevronRight } from "lucide-react";
 import { useApiKeys } from "@/context/ApiKeyContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { PROVIDER_MODELS } from "@/config/providerModels";
@@ -326,8 +326,7 @@ export default function SettingsModal({ isOpen, onClose }) {
               </label>
             </div>
 
-            {/* ── Bulk Import Section (Bengali-language UI only) ── */}
-            {lang === "bn" && (
+            {/* ── Bulk Import / Export Section ── */}
             <div style={{ marginBottom: '16px', borderRadius: '12px', border: `1px solid ${showImport ? 'var(--accent)' : 'var(--border)'}`, overflow: 'hidden', transition: 'border-color 0.2s' }}>
               <button
                 onClick={() => { setShowImport(!showImport); setImportPreview(null); setImportError(""); }}
@@ -338,8 +337,8 @@ export default function SettingsModal({ isOpen, onClose }) {
                     <Upload size={14} color="var(--accent)" />
                   </div>
                   <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)' }}>📥 একসাথে সব API Key যোগ করুন</div>
-                    <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2 }}>একটি ফাইল আপলোড করুন — সব key স্বয়ংক্রিয়ভাবে সঠিক জায়গায় বসে যাবে</div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)' }}>{t("settings.bulkTitle")}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2 }}>{t("settings.bulkDesc")}</div>
                   </div>
                 </div>
                 <ChevronRight size={16} color="var(--text2)" style={{ transform: showImport ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
@@ -351,49 +350,38 @@ export default function SettingsModal({ isOpen, onClose }) {
                   {/* Step 1 — Download Template */}
                   <div style={{ borderRadius: 10, border: '1px solid var(--border)', overflow: 'hidden' }}>
                     <div style={{ padding: '10px 14px', background: 'linear-gradient(90deg,#6366f112,#06b6d40e)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: 'var(--accent)', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>১</span>
+                      <span style={{ background: 'var(--accent)', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>1</span>
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>Template ফাইল ডাউনলোড করুন</div>
-                        <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 1 }}>নিচের যেকোনো একটি ডাউনলোড করুন → ফাইলটি খুলুন → আপনার আসল API Key দিয়ে পুরানো লেখাগুলো বদলে দিন</div>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>{t("settings.bulkStep1Title")}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 1 }}>{t("settings.bulkStep1Desc")}</div>
                       </div>
                     </div>
                     <div style={{ padding: '12px', display: 'flex', gap: 8, flexWrap: 'wrap', background: 'var(--bg)' }}>
                       {[
                         {
-                          label: 'JSON ফাইল', ext: 'json', color: '#6366f1',
-                          hint: 'Notepad বা VS Code দিয়ে খুলুন',
+                          label: t("settings.bulkJsonLabel"), ext: 'json', color: '#6366f1',
+                          hint: t("settings.bulkJsonHint"),
                           content: JSON.stringify({
-                            gemini: ["এখানে_আপনার_GEMINI_KEY_১", "এখানে_আপনার_GEMINI_KEY_২"],
-                            groq: ["এখানে_আপনার_GROQ_KEY_১", "এখানে_আপনার_GROQ_KEY_২"],
-                            mistral: ["এখানে_আপনার_MISTRAL_KEY_১", "এখানে_আপনার_MISTRAL_KEY_২"],
-                            openrouter: ["এখানে_আপনার_OPENROUTER_KEY_১", "এখানে_আপনার_OPENROUTER_KEY_২"],
-                            huggingface: ["এখানে_আপনার_HF_KEY_১", "এখানে_আপনার_HF_KEY_২"],
+                            gemini: ["YOUR_GEMINI_KEY_1", "YOUR_GEMINI_KEY_2"],
+                            groq: ["YOUR_GROQ_KEY_1", "YOUR_GROQ_KEY_2"],
+                            mistral: ["YOUR_MISTRAL_KEY_1", "YOUR_MISTRAL_KEY_2"],
+                            openrouter: ["YOUR_OPENROUTER_KEY_1", "YOUR_OPENROUTER_KEY_2"],
+                            huggingface: ["YOUR_HF_KEY_1", "YOUR_HF_KEY_2"],
+                            cerebras: ["YOUR_CEREBRAS_KEY_1"],
+                            nvidia: ["YOUR_NVIDIA_KEY_1"],
+                            github: ["YOUR_GITHUB_TOKEN_1"],
                           }, null, 2), mime: 'application/json'
                         },
                         {
-                          label: 'CSV ফাইল', ext: 'csv', color: '#06b6d4',
-                          hint: 'Excel বা Google Sheets দিয়ে খুলুন',
-                          content: `provider,key\ngemini,এখানে_আপনার_GEMINI_KEY_১\ngemini,এখানে_আপনার_GEMINI_KEY_২\ngroq,এখানে_আপনার_GROQ_KEY_১\ngroq,এখানে_আপনার_GROQ_KEY_২\nmistral,এখানে_আপনার_MISTRAL_KEY_১\nopenrouter,এখানে_আপনার_OPENROUTER_KEY_১\nhuggingface,এখানে_আপনার_HF_KEY_১`,
+                          label: t("settings.bulkCsvLabel"), ext: 'csv', color: '#06b6d4',
+                          hint: t("settings.bulkCsvHint"),
+                          content: `provider,key\ngemini,YOUR_GEMINI_KEY_1\ngemini,YOUR_GEMINI_KEY_2\ngroq,YOUR_GROQ_KEY_1\ngroq,YOUR_GROQ_KEY_2\nmistral,YOUR_MISTRAL_KEY_1\nopenrouter,YOUR_OPENROUTER_KEY_1\nhuggingface,YOUR_HF_KEY_1\ncerebras,YOUR_CEREBRAS_KEY_1\nnvidia,YOUR_NVIDIA_KEY_1\ngithub,YOUR_GITHUB_TOKEN_1`,
                           mime: 'text/csv'
                         },
                         {
-                          label: 'TXT ফাইল', ext: 'txt', color: '#10b981',
-                          hint: 'সবচেয়ে সহজ — শুধু keys লিখুন',
-                          content: `# প্রতিটি লাইনে একটি API Key লিখুন।
-# সিস্টেম নিজেই বুঝবে কোন key কোথায় যাবে।
-#
-# AIzaSy... দিয়ে শুরু  →  Gemini
-# gsk_ দিয়ে শুরু       →  Groq
-# sk-or- দিয়ে শুরু     →  OpenRouter
-# hf_ দিয়ে শুরু        →  HuggingFace
-# sk- দিয়ে শুরু        →  Mistral
-# csk- দিয়ে শুরু       →  Cerebras
-# nvapi- দিয়ে শুরু     →  NVIDIA NIM
-
-এখানে_আপনার_GEMINI_KEY_১
-এখানে_আপনার_GEMINI_KEY_২
-এখানে_আপনার_GROQ_KEY_১
-এখানে_আপনার_GROQ_KEY_২`,
+                          label: t("settings.bulkTxtLabel"), ext: 'txt', color: '#10b981',
+                          hint: t("settings.bulkTxtHint"),
+                          content: `# One API Key per line.\n# The system auto-detects which provider each key belongs to.\n#\n# AIzaSy...  →  Gemini\n# gsk_       →  Groq\n# sk-or-     →  OpenRouter\n# hf_        →  HuggingFace\n# sk-        →  Mistral\n# csk-       →  Cerebras\n# nvapi-     →  NVIDIA NIM\n# ghp_       →  GitHub Models\n\nYOUR_GEMINI_KEY_1\nYOUR_GROQ_KEY_1`,
                           mime: 'text/plain'
                         },
                       ].map(tpl => (
@@ -411,7 +399,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <FileJson size={14} color={tpl.color} />
-                            <span style={{ fontWeight: 700, fontSize: 12, color: tpl.color }}>⬇ {tpl.label}</span>
+                            <span style={{ fontWeight: 700, fontSize: 12, color: tpl.color }}>{tpl.label}</span>
                           </div>
                           <span style={{ fontSize: 10, color: 'var(--text2)', lineHeight: 1.4 }}>{tpl.hint}</span>
                         </button>
@@ -419,17 +407,17 @@ export default function SettingsModal({ isOpen, onClose }) {
                     </div>
                     <div style={{ padding: '8px 14px', background: 'color-mix(in srgb,#f59e0b 6%,var(--bg))', borderTop: '1px dashed #f59e0b40', fontSize: 11, color: '#92400e', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                       <span style={{ fontSize: 14, flexShrink: 0 }}>💡</span>
-                      <span><strong>কীভাবে করবেন:</strong> ফাইল ডাউনলোড করুন → খুলুন → <code style={{ background: '#f59e0b20', padding: '1px 4px', borderRadius: 3 }}>এখানে_আপনার_..._KEY</code> লেখাগুলোর জায়গায় আসল key বসান → Save করুন → নিচে আপলোড করুন।</span>
+                      <span><strong>{t("settings.bulkStep1TipHow")}</strong> {t("settings.bulkStep1Tip")}</span>
                     </div>
                   </div>
 
                   {/* Step 2 — Upload */}
                   <div style={{ borderRadius: 10, border: '1px solid var(--border)', overflow: 'hidden' }}>
                     <div style={{ padding: '10px 14px', background: 'linear-gradient(90deg,#10b98112,#06b6d40e)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: '#10b981', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>২</span>
+                      <span style={{ background: '#10b981', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, flexShrink: 0 }}>2</span>
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>ফাইলটি আপলোড করুন</div>
-                        <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 1 }}>ফিলআপ করা ফাইলটি নিচে ছেড়ে দিন বা ক্লিক করে বেছে নিন</div>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>{t("settings.bulkStep2Title")}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 1 }}>{t("settings.bulkStep2Desc")}</div>
                       </div>
                     </div>
                     <div style={{ padding: '12px', background: 'var(--bg)' }}>
@@ -441,10 +429,10 @@ export default function SettingsModal({ isOpen, onClose }) {
                         style={{ border: `2px dashed ${isDragging ? 'var(--accent)' : 'var(--border)'}`, borderRadius: 10, padding: '28px 16px', textAlign: 'center', cursor: 'pointer', background: isDragging ? 'color-mix(in srgb,var(--accent) 8%,var(--bg))' : 'var(--bg2)', transition: 'all 0.2s' }}
                       >
                         <div style={{ fontSize: 32, marginBottom: 8 }}>{isDragging ? '📂' : '📁'}</div>
-                        <div style={{ fontWeight: 700, fontSize: 14, color: isDragging ? 'var(--accent)' : 'var(--text)' }}>{isDragging ? 'ছেড়ে দিন!' : 'এখানে ফাইল ছেড়ে দিন'}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text2)', margin: '6px 0 10px' }}>অথবা</div>
+                        <div style={{ fontWeight: 700, fontSize: 14, color: isDragging ? 'var(--accent)' : 'var(--text)' }}>{isDragging ? t("settings.bulkDropRelease") : t("settings.bulkDropText")}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text2)', margin: '6px 0 10px' }}>{t("settings.bulkDropOr")}</div>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 8, background: 'var(--accent)', color: '#fff', fontSize: 12, fontWeight: 700 }}>
-                          <Upload size={13} /> ফাইল বেছে নিন
+                          <Upload size={13} /> {t("settings.bulkDropBtn")}
                         </div>
                         <div style={{ marginTop: 10, display: 'flex', gap: 4, justifyContent: 'center' }}>
                           {[['json','#6366f1'],['csv','#06b6d4'],['txt','#10b981']].map(([ext,c]) => (
@@ -455,8 +443,46 @@ export default function SettingsModal({ isOpen, onClose }) {
                       <input ref={fileInputRef} type="file" accept=".json,.csv,.txt" style={{ display:'none' }} onChange={(e) => handleFileParse(e.target.files[0])} />
                       <div style={{ marginTop: 8, padding: '8px 12px', borderRadius: 8, background: 'color-mix(in srgb,#3b82f6 6%,var(--bg))', border: '1px solid #3b82f620', fontSize: 11, color: 'var(--text2)', display: 'flex', gap: 6, alignItems: 'flex-start' }}>
                         <span style={{ fontSize: 13, flexShrink: 0 }}>🔒</span>
-                        <span><strong style={{ color: 'var(--text)' }}>আপনার আগের keys মুছবে না!</strong> নতুন keys আগেরগুলোর সাথে যোগ হবে। তাই নিশ্চিন্তে আপলোড করুন।</span>
+                        <span><strong style={{ color: 'var(--text)' }}>{t("settings.bulkSafeNote")}</strong> {t("settings.bulkSafeNoteDesc")}</span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Export current keys */}
+                  <div style={{ borderRadius: 10, border: '1px solid var(--border)', overflow: 'hidden' }}>
+                    <div style={{ padding: '10px 14px', background: 'linear-gradient(90deg,#8b5cf612,#6366f10e)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Download size={14} color="#8b5cf6" />
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)' }}>{t("settings.bulkExportTitle")}</div>
+                          <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 1 }}>{t("settings.bulkExportDesc")}</div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const exportData = {};
+                          let hasKeys = false;
+                          for (const p of PROVIDERS) {
+                            const pKeys = (keys[p.key] || []).filter(k => k && k.trim());
+                            if (pKeys.length > 0) {
+                              exportData[p.key] = pKeys;
+                              hasKeys = true;
+                            }
+                          }
+                          if (!hasKeys) {
+                            showToast(t("settings.bulkExportEmpty"), "error");
+                            return;
+                          }
+                          const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url; a.download = 'api-keys.json'; a.click();
+                          URL.revokeObjectURL(url);
+                        }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8, background: '#8b5cf615', border: '1px solid #8b5cf635', cursor: 'pointer', color: '#8b5cf6', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}
+                      >
+                        <Download size={13} /> {t("settings.bulkExportBtn")}
+                      </button>
                     </div>
                   </div>
 
@@ -492,10 +518,10 @@ export default function SettingsModal({ isOpen, onClose }) {
                         </div>
                         <div style={{ padding: '10px 12px', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, background: 'var(--bg2)' }}>
                           <button onClick={handleApplyImport} className="btn btn-primary" style={{ fontSize: 12, padding: '8px 16px', flex: 1 }}>
-                            <Check size={14} /> Apply & Save All Keys
+                            <Check size={14} /> {t("settings.bulkApply")}
                           </button>
                           <button onClick={() => { setImportPreview(null); setImportError(""); if(fileInputRef.current) fileInputRef.current.value = ""; }} className="btn btn-secondary" style={{ fontSize: 12, padding: '8px 14px' }}>
-                            Discard
+                            {t("settings.bulkDiscard")}
                           </button>
                         </div>
                       </div>
@@ -504,7 +530,6 @@ export default function SettingsModal({ isOpen, onClose }) {
                 </div>
               )}
             </div>
-            )}
 
             <div className="modal-providers">
               {PROVIDERS.map((p) => (
