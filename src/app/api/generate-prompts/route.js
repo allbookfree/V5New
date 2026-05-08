@@ -49,13 +49,13 @@ function getMarketplaceGuidance(targetMarket, type) {
       avoid: "Plastic corporate stock clichés, perfect symmetry, smooth uniform lighting, telltale AI sheen, repetitive compositions.",
     },
     shutterstock: {
-      identity: "Highest-volume universal stock — content is licensed across global advertising, web, and print. Buyers value broad versatility + indemnified safety.",
+      identity: "Highest-volume universal stock — content licensed across global advertising, web, and print. As of 2024, the public AI Generator pipeline is the only sanctioned route for synthetic content; uploads through the regular Contributor portal must look human-shot. Buyers value broad versatility + indemnified safety.",
       aesthetic: isVideo
-        ? "Hyper-commercial stock motion: ultra-stable camera, isolated subject, broad global readability, copy-space friendly."
+        ? "Hyper-commercial stock motion that looks like a real production shoot: ultra-stable tripod/gimbal, isolated subject, broad global readability, copy-space friendly. Hide all AI-style tells."
         : isVector
-        ? "Designer-ready vectors: isolated elements, clear copy space, sRGB, EPS-clean paths, fonts outlined, no embedded bitmaps, smooth gradients without banding."
-        : "Bright, sharp, isolated subjects with clear copy space. Universal global appeal. Authentic look — buyers can spot AI artifacts and reject them.",
-      avoid: "Over-processed AI sheen, busy backgrounds, niche/regional concepts that limit universal use.",
+        ? "Designer-ready vectors that look hand-drawn or human-drafted: isolated elements, clear copy space, sRGB, EPS-clean paths, fonts outlined, no embedded bitmaps, smooth gradients without banding."
+        : "Bright, sharp, isolated subjects that read as authentic photography. Universal global appeal. Reviewers will reject obvious AI artifacts — the human-touch curation pass after generation is mandatory before upload.",
+      avoid: "Over-processed AI sheen, plastic skin/textures, busy backgrounds, repeated lighting tells, niche/regional concepts that limit universal use.",
     },
     freepik: {
       identity: "Modern digital-first marketplace — content is used in social, web, marketing collateral, and design templates.",
@@ -67,18 +67,27 @@ function getMarketplaceGuidance(targetMarket, type) {
       avoid: "Drab/dated aesthetics, holiday content submitted after the holiday, designs containing visible third-party brands or year numbers.",
     },
     getty: {
-      identity: "Editorial / commercial premium tier. Strictest authenticity bar in the industry. Buyers explicitly want content that feels human-made and emotionally true.",
+      identity: "Editorial / commercial premium tier. Strictest authenticity bar in the industry. Getty/iStock currently rejects pure generative AI submissions — only the in-house Generative AI by iStock pipeline is sanctioned; everything submitted via the regular Contributor portal MUST look human-made. Buyers explicitly want content that feels human-made and emotionally true.",
       aesthetic: isVideo
-        ? "Story-first cinematography: candid moments, lived-in environments, controlled imperfection, deliberate grain or texture."
+        ? "Story-first cinematography: candid moments, lived-in environments, controlled imperfection, deliberate grain or texture, hand-held warmth."
         : isVector
         ? "Hand-crafted feel — visible brushwork, intentional asymmetry, conceptual depth. Vectors must communicate an idea, not just decorate."
-        : "Authentic light, real-world surface textures, candid framing, narrative depth. Treat each frame as if it could anchor an editorial spread.",
+        : "Authentic light, real-world surface textures, candid framing, narrative depth. Treat each frame as if it could anchor an editorial spread — the human curation pass after generation is non-negotiable.",
       avoid: "Hyper-smooth skin, sterile symmetry, clinical/uniform lighting, generic AI compositions. These are the exact patterns Getty's reviewers reject.",
     },
     dreamstime: {
-      identity: "General-purpose stock used by small business, blogs, news, and entry-tier marketing. Volume + clarity-of-concept matter most.",
+      identity: "General-purpose stock used by small business, blogs, news, and entry-tier marketing. AI-generated content is officially accepted with disclosure (the Dreamstime AI Generator and traditional contributor flow both work). Volume + clarity-of-concept matter most.",
       aesthetic: "Direct, instantly readable concepts. Subject + context understandable at thumbnail size. Broad, flexible utility.",
-      avoid: "Overly artistic or ambiguous compositions; abstract concepts that confuse a casual buyer.",
+      avoid: "Overly artistic or ambiguous compositions; abstract concepts that confuse a casual buyer; missing AI disclosure on AI uploads.",
+    },
+    depositphotos: {
+      identity: "Royalty-free general stock. Pure generative AI is not accepted through the regular Contributor portal — the only direct AI route is via the Picfair partner pipeline. For everything else, treat AI output as a starting point that needs a real human edit pass before submission.",
+      aesthetic: isVideo
+        ? "Stable, well-lit clips that read as professionally shot footage. Hide AI motion artifacts; favour locked-off camera or smooth slider movement."
+        : isVector
+        ? "Clean, designer-friendly vectors with crisp paths and on-trend palettes — must look like they were drafted in Illustrator, not auto-generated."
+        : "Authentic photography look: real lens character, natural lighting, believable surface micro-detail. The human touch-up after generation is mandatory.",
+      avoid: "Recognisable AI tells (over-smooth skin, melting textures, repeated patterns), missing disclosure, low-resolution exports.",
     },
     vecteezy: {
       identity: "Vectors / photos / video marketplace popular with creators and small studios. AI content welcome but held to clear quality bar.",
@@ -90,28 +99,28 @@ function getMarketplaceGuidance(targetMarket, type) {
       avoid: "Sloppy execution, derivative AI looks, watermarks, brand logos, low-resolution exports.",
     },
     pond5: {
-      identity: "Video-first marketplace for filmmakers, broadcasters, and ad agencies. Premium footage commands premium prices.",
+      identity: "Video-first marketplace for filmmakers, broadcasters, and ad agencies. Pure generative AI footage is currently rejected at intake — only the dedicated Pond5 AI Marketplace channel accepts synthetic clips. Prompts here must describe content that COULD be a real shoot, with a human grading/editing pass before upload. Premium footage commands premium prices.",
       aesthetic: isVideo
-        ? "Cinematic footage: 4K+ resolution, color-graded look, professional camera work, broadcast-ready stability, clear story beat per clip."
+        ? "Cinematic footage: 4K+ resolution, color-graded look, professional camera work, broadcast-ready stability, clear story beat per clip. Hide every AI tell."
         : "If submitting stills: production-still quality — behind-the-scenes feel, cinematic lighting, narrative context.",
-      avoid: "Shaky handheld, social-media filters, jump-cuts mid-clip, watermarks. Pond5 buyers expect agency-grade quality.",
+      avoid: "Shaky handheld, social-media filters, jump-cuts mid-clip, watermarks, obvious AI motion glitches. Pond5 buyers expect agency-grade quality.",
     },
     creativemarket: {
-      identity: "Design-asset marketplace for templates, fonts, graphics, and curated illustration sets. Buyers are designers building brand identity systems.",
+      identity: "Design-asset marketplace for templates, fonts, graphics, and curated illustration sets. Pure AI-generated photo packs are discouraged — vector / template / font products fare best, and even those benefit from a clear human edit pass to look hand-crafted. Buyers are designers building brand identity systems.",
       aesthetic: isVector
-        ? "Cohesive curated sets: shared palette, consistent stroke/style, layered/editable construction, presentation-ready."
+        ? "Cohesive curated sets: shared palette, consistent stroke/style, layered/editable construction, presentation-ready, hand-drafted feel."
         : "Lifestyle imagery and textures that designers can drop into mockups, social templates, and brand boards. Editorial mood, on-trend palettes."
         ,
-      avoid: "One-off unrelated assets, mixed styles within a pack, hard-to-edit flattened files, generic stock looks.",
+      avoid: "One-off unrelated assets, mixed styles within a pack, hard-to-edit flattened files, generic stock looks, raw unedited AI output.",
     },
     envato: {
-      identity: "Subscription-based powerhouse for agencies and freelancers. Content must have high utility and be ready for immediate drop-in use.",
+      identity: "Subscription-based powerhouse for agencies and freelancers. As of 2024 Envato Elements stopped accepting pure AI-generated stock photos through the standard route; vector graphics, patterns, templates and design assets remain the strongest categories. Photos require a human edit/composite pass before upload.",
       aesthetic: isVideo
-        ? "Clean, modern, highly stable footage (corporate, tech, lifestyle, abstract backgrounds)."
+        ? "Clean, modern, highly stable footage (corporate, tech, lifestyle, abstract backgrounds) that reads as a real production."
         : isVector
-        ? "Highly organized layers, trendy commercial aesthetics (glassmorphism, clean flat, isometric), presentation-ready."
-        : "Utility-first photography: hero images with copy space, clean isolated objects, diverse lifestyle.",
-      avoid: "Disorganized files, messy compositions, anything that requires heavy editing by the buyer.",
+        ? "Highly organized layers, trendy commercial aesthetics (glassmorphism, clean flat, isometric), presentation-ready, looks designer-drafted."
+        : "Utility-first photography: hero images with copy space, clean isolated objects, diverse lifestyle. The human touch-up before upload is mandatory.",
+      avoid: "Disorganized files, messy compositions, anything that requires heavy editing by the buyer, raw unedited AI output, obvious synthetic tells.",
     },
     etsy: {
       identity: "B2C marketplace for digital downloads, wall art, and clipart. Buyers want aesthetic, beautiful, emotional, or trendy craft assets.",
@@ -126,9 +135,48 @@ function getMarketplaceGuidance(targetMarket, type) {
       avoid: "Slightly melted textures, impossible physics, text/watermarks, cartoon styles (unless explicitly specified as illustration).",
     },
     redbubble: {
-      identity: "Print-on-demand platform for Gen-Z/Millennial apparel and stickers. Trend-driven, pop-culture adjacent, expressive.",
+      identity: "Print-on-demand platform for Gen-Z/Millennial apparel and stickers. Trend-driven, pop-culture adjacent, expressive. AI designs are accepted as long as you own the prompt rights and avoid trademark/IP infringement.",
       aesthetic: "Self-contained designs with clean transparent/white backgrounds. High contrast, bold colors, readable from a distance (on a t-shirt).",
-      avoid: "Full-bleed photographs, messy edges, low-contrast designs, generic corporate imagery.",
+      avoid: "Full-bleed photographs, messy edges, low-contrast designs, generic corporate imagery, copyrighted characters or logos.",
+    },
+    "123rf": {
+      identity: "Mid-tier global stock marketplace. AI-generated content is officially accepted with disclosure since 2023; competitive earnings and quick review. Volume + clear, commercially-relevant subjects matter.",
+      aesthetic: isVideo
+        ? "Stable, well-lit, broadcast-clean clips with universal appeal."
+        : isVector
+        ? "Crisp vector packs (icons, patterns, infographics) with clean paths and trendy palettes."
+        : "Bright, sharp, commercially versatile photography — isolated subjects, copy space, no obvious AI tells.",
+      avoid: "Missing AI disclosure, low-resolution exports, third-party brand marks, melting textures.",
+    },
+    pixta: {
+      identity: "Japan-headquartered global stock marketplace. AI content accepted since 2024 with disclosure. Strong demand for Asian and global lifestyle subjects — huge opportunity for under-supplied non-Western themes (halal, South Asian, Southeast Asian).",
+      aesthetic: isVideo
+        ? "Clean, professionally framed motion suitable for Japanese and global advertising; understated, story-first."
+        : isVector
+        ? "Crisp, polite design aesthetic; vector packs with multilingual usability and clean construction."
+        : "Authentic photography with broad regional readability — lighting, environment, and props that resonate in both Asian and Western markets.",
+      avoid: "Western-only stereotypes, missing AI disclosure, niche memes, low resolution, busy compositions.",
+    },
+    society6: {
+      identity: "Print-on-demand marketplace for art prints, home goods, apparel, and decor. AI art is welcome; designs must be self-contained and reproducible across many product surfaces (mug, throw pillow, framed print, tote).",
+      aesthetic: "Decorative, gallery-friendly art with strong palette discipline. Designs must hold up at small sticker scale AND large wall-art scale. Transparent or clean background friendly.",
+      avoid: "Generic stock looks, photographs that lose impact when cropped to product shapes, copyrighted characters/logos.",
+    },
+    pixabay: {
+      identity: "Free media platform with a Content Plus paid tier. AI content welcome (with disclosure). Best as an audience-builder — huge organic discovery flowing into your portfolio across the wider stock ecosystem.",
+      aesthetic: isVideo
+        ? "Light, social-friendly, web-ready clips with universal appeal."
+        : isVector
+        ? "Clean SVG-friendly vectors usable in web/blog/social."
+        : "Bright, broadly usable photography — hero shots, lifestyle moments, and texture/background frames.",
+      avoid: "Missing AI disclosure, niche or regional-only subjects with limited reach, watermarks/logos.",
+    },
+    "amazon-kdp": {
+      identity: "Amazon Kindle Direct Publishing — dominant marketplace for self-published books, low-content notebooks/journals, and book-cover-grade artwork. Amazon allows AI-generated covers and interior art with disclosure, but expects a clear human curation/edit pass before publication.",
+      aesthetic: isVector
+        ? "Cover-grade vector art and patterns: clean lines, strong silhouette, readable at thumbnail size, scalable for paperback and hardcover trims."
+        : "Cover-grade illustration / photo: strong focal subject, copy-space at top + bottom for title/author, mood that matches the book's genre, readable at Kindle thumbnail scale.",
+      avoid: "Cluttered compositions, weak focal subject, designs that fail at thumbnail size, raw unedited AI output, anything resembling a real public figure or trademarked character.",
     },
   };
 
@@ -1028,12 +1076,17 @@ ${marketplaceGuidance}`;
 - Describe the scene's natural flow: wind through leaves, water rippling, light shifting, shadows moving, clouds drifting, flames flickering, steam rising, rain falling.
 - Specify atmosphere and mood: misty, crisp, hazy, moody, warm, cold, ethereal, dramatic.
 - Include quality modifiers: 4K cinematic, slow motion 120fps, natural motion, realistic physics, shallow depth of field.
+- LENS & FORMAT: name a real lens/format when it sharpens the brief — anamorphic 2.39:1, ARRI Alexa, RED Komodo, Blackmagic 6K, vintage Cooke S4, 35mm prime, 50mm macro, 24mm wide. Match the format to the buyer (broadcast, web hero, social).
+- FRAME RATE INTENT: state the frame-rate purpose — 24fps cinematic, 30fps broadcast, 60fps smooth motion, 120fps super slow-mo, time-lapse, hyperlapse. Frame rate is part of the look, not a footnote.
+- COLOR GRADE: specify a grade/LUT vibe when it elevates the scene — teal-and-orange blockbuster, bleach-bypass desaturated, Kodak 2383 print, Fuji Eterna, warm sunset wash, cool morning haze, neutral commercial. Avoid generic "vibrant".
+- AUDIO-FRIENDLY CONTEXT: even though we generate visual prompts, briefly hint at the implied sound world (gentle ambience, footsteps, wind, rain, machinery, market chatter). Models that support sound use it; models that don't simply ignore it — there is no downside.
+- ASPECT-RATIO INTELLIGENCE: pick a primary aspect ratio that fits the buyer use-case — 16:9 hero / broadcast, 9:16 Reels / TikTok / Shorts, 1:1 grid post, 4:5 feed, 2.39:1 cinematic, 21:9 ultrawide. Compose for that ratio, do not just crop.
+- LOOPABLE CLIPS: where the action allows, design a seamless loop (start frame matches end frame) — these are premium for website backgrounds, kiosk displays and corporate decks.
+- CULTURAL BREADTH (HALAL): vary regions, environments and palettes (Mediterranean coast, Southeast Asian rainforest, Andean highlands, Nordic fjords, Gulf desert dunes, East African savanna, Levantine olive groves) without leaning on tired stereotypes. Always halal-safe — no human faces, no figures, no national flags or religious symbols on people.
 - Avoid static compositions — stock video buyers need dynamic content with visual energy.
 - Focus on content with HIGH COMMERCIAL DEMAND — use your intuition to choose categories that real buyers actively search for and license.
-- Consider creating LOOPABLE clips where possible — seamless loops are premium content for website backgrounds and presentations.
-- Include both horizontal (16:9) and consider vertical (9:16) framing opportunities for social media buyers.
 - Each video prompt must feel like a scene a real production company would shoot for a commercial client — the kind of footage used in TV commercials, corporate presentations, and social media campaigns.
-- AI QUALITY SAFEGUARDS: Do NOT describe any readable text, signs, or writing in the video scene — AI-generated text is always garbled. Focus on pure visual storytelling without text elements. Ensure consistent lighting and natural physics throughout the described motion.`
+- AI QUALITY SAFEGUARDS: Do NOT describe any readable text, signs, or writing in the video scene — AI-generated text is always garbled. Focus on pure visual storytelling without text elements. Ensure consistent lighting and natural physics throughout the described motion. Avoid impossible morphing, sudden teleports, or limbs/objects passing through solids.`
     : type === "vector"
       ? `- Follow this prompt structure: [Subject] + [Art Style] + [Colors/Palette] + [Composition] + [Rendering Rules] + [Use Case].
 - Every prompt MUST describe content suitable for VECTOR conversion — the image will be converted to vector format using automated tracing tools, so clean edges and solid colors are CRITICAL for successful conversion.
@@ -1052,12 +1105,17 @@ ${marketplaceGuidance}`;
 - Specify lighting setup: golden hour, chiaroscuro, softbox, rembrandt, rim lighting, volumetric fog, window light, studio strobe, natural ambient, high-key, low-key.
 - Describe composition and framing: rule of thirds, symmetrical, leading lines, flat-lay, extreme close-up, panoramic, overhead, eye-level, dutch angle.
 - Include quality modifiers: 8K resolution, DSLR quality, film stock tones (Kodak Portra 400, Fuji Velvia 50, Kodak Ektar 100), high dynamic range, sharp focus, shallow depth of field with creamy bokeh.
-- Consider "IMPOSSIBLE SHOT" opportunities — extreme macro, underwater, aerial, cross-section, or dangerous-scenario shots that real photographers cannot easily capture but buyers desperately want.
+- ASPECT-RATIO INTELLIGENCE: pick the ratio that matches the buyer use-case rather than defaulting to one shape — 3:2 editorial / DSLR, 4:5 magazine / Instagram feed, 1:1 social grid, 16:9 web hero / banner, 9:16 mobile / Reels / Pinterest, 2:3 portrait poster, 21:9 ultrawide hero. Compose for that ratio (subject placement, copy space, breathing room) — do not just crop a square.
+- COLOR-GRADE / FILM LANGUAGE: name the look, not just the colors — Kodak Portra warmth, Fuji Pro 400H pastel, Cinestill 800T tungsten glow, bleach-bypass, teal-and-orange, muted earth tones, high-key clean white, low-key moody, golden-hour amber, blue-hour twilight. Avoid generic "vibrant".
+- CULTURAL BREADTH (HALAL): rotate global settings, materials and palettes — Mediterranean coast, Southeast Asian rainforest, Andean highlands, Nordic fjords, Gulf desert dunes, East African savanna, Levantine olive groves, Japanese ryokan interiors, Latin American mercados — without leaning on tired stereotypes. Always halal-safe — no human faces, no figures, no national flags or religious symbols on people.
+- SEASONAL & TIME-OF-DAY VARIETY: deliberately rotate season (spring blossom, high summer, autumn harvest, deep winter) and time of day (dawn, golden hour, noon, blue hour, night) across the prompt set — do not let every prompt collapse onto the same lighting.
+- COPY-SPACE WHERE NATURAL: when the composition naturally allows it, include areas of soft focus, open sky, blurred background, or clean surface that could serve as copy space for text overlay — but NEVER force empty space that ruins the image's beauty. The image must look stunning on its own first.
+- "IMPOSSIBLE SHOT" OPPORTUNITIES: extreme macro, underwater, aerial / drone, cross-section, microscope, x-ray-style, or dangerous-scenario shots that real photographers cannot easily capture but buyers desperately want.
+- Every image MUST look like a REAL photograph — photorealistic, believable, professionally shot. No illustrations, no paintings, no artistic interpretations unless the buyer brief explicitly demands it.
 - Focus on images that work as premium stock photos: versatile compositions, clean backgrounds, and universal commercial appeal.
-- When the composition naturally allows it, include areas of soft focus, open sky, blurred background, or clean surface that could serve as copy space for text overlay — but NEVER force empty space that ruins the image's beauty. The image must look stunning on its own first.
 - Use your own commercial intuition to choose niches and subjects that have high demand and real buyer interest.
 - Each prompt must describe a scene that a real buyer would pay premium price for — think magazine covers, advertising campaigns, website heroes, and editorial features.
-- AI QUALITY SAFEGUARDS: Do NOT describe any readable text, signs, labels, letters, numbers, or writing in the scene — AI-generated text always appears garbled and causes rejection. Avoid overly complex overlapping objects that create rendering confusion. Ensure lighting direction and shadows are consistent throughout the scene. Describe natural authentic textures (wood grain, fabric weave, stone surface) rather than smooth plastic-like surfaces.`;
+- AI QUALITY SAFEGUARDS: Do NOT describe any readable text, signs, labels, letters, numbers, or writing in the scene — AI-generated text always appears garbled and causes rejection. Avoid overly complex overlapping objects that create rendering confusion. Ensure lighting direction and shadows are consistent throughout the scene. Describe natural authentic textures (wood grain, fabric weave, stone surface) rather than smooth plastic-like surfaces. Avoid extra fingers, melted hands, or other AI tells by keeping anatomy out of frame entirely (halal rule already handles this).`;
 
   const typeSpecificGuidance = engineerMode ? engineerGuidance : simpleGuidance;
 

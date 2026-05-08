@@ -44,18 +44,22 @@ function Badge({ type, label }) {
 // ─── Model Data ─────────────────────────────────────────────────────
 // effectiveB = effective parameter count in billions for numeric comparison.
 // For MoE models, this reflects total capacity, not per-expert count.
+// Curated May 2026: only the models actually wired through models.js stay
+// listed here. Officially deprecated / removed models (Cerebras llama3.1-8b
+// + qwen-3-235b sunset 27 May 2026, Groq GPT-OSS-20B, redundant siblings)
+// were dropped during the comprehensive cleanup.
 const MODELS = [
   // Gemini
   { id: "gemini-pro", provider: "Gemini", label: "Gemini 2.5 Pro", params: "~1T+", effectiveB: 1000, tier: "flagship", emoji: "🔵" },
   { id: "gemini", provider: "Gemini", label: "Gemini 2.5 Flash", params: "~300B+", effectiveB: 300, tier: "recommended", emoji: "🔵" },
   { id: "gemini-lite", provider: "Gemini", label: "Gemini 2.5 Flash-Lite", params: "~100B+", effectiveB: 100, tier: "good", emoji: "🔵" },
-  // Groq
-  { id: "groq-kimi", provider: "Groq", label: "Kimi K2", params: "1T+ MoE", effectiveB: 200, tier: "recommended", emoji: "🔴" },
+  // Groq (Maverick stays text-only here for the comparison matrix; in the
+  // generator dropdown it's exposed only on the Vision/Metadata side.)
+  { id: "groq-kimi", provider: "Groq", label: "Kimi K2-0905", params: "1T+ MoE", effectiveB: 200, tier: "recommended", emoji: "🔴" },
   { id: "groq-gpt-oss", provider: "Groq", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "recommended", emoji: "🔴" },
   { id: "groq-maverick", provider: "Groq", label: "Llama 4 Maverick", params: "17B×128E", effectiveB: 400, tier: "good", emoji: "🔴" },
   { id: "groq", provider: "Groq", label: "Llama 3.3 70B", params: "70B", effectiveB: 70, tier: "good", emoji: "🔴" },
   { id: "groq-qwen3", provider: "Groq", label: "Qwen 3 32B", params: "32B", effectiveB: 32, tier: "good", emoji: "🔴" },
-  { id: "groq-gpt-oss-20b", provider: "Groq", label: "GPT-OSS 20B", params: "20B", effectiveB: 20, tier: "limited", emoji: "🔴" },
   { id: "groq-fast", provider: "Groq", label: "Llama 3.1 8B", params: "8B", effectiveB: 8, tier: "caution", emoji: "🔴" },
   // Mistral
   { id: "mistral", provider: "Mistral", label: "Mistral Small 4", params: "~24B", effectiveB: 24, tier: "good", emoji: "🟠" },
@@ -66,23 +70,19 @@ const MODELS = [
   { id: "or-deepseek-r1", provider: "OpenRouter", label: "DeepSeek R1", params: "671B MoE", effectiveB: 671, tier: "good", emoji: "🟣" },
   { id: "or-nemotron-super", provider: "OpenRouter", label: "Nemotron 3 Super 120B", params: "120B MoE", effectiveB: 120, tier: "good", emoji: "🟣" },
   { id: "or-gpt-oss", provider: "OpenRouter", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "good", emoji: "🟣" },
+  { id: "or-qwen3-coder", provider: "OpenRouter", label: "Qwen 3 Coder", params: "~30B", effectiveB: 30, tier: "good", emoji: "🟣" },
   { id: "or-gemma4-31b", provider: "OpenRouter", label: "Gemma 4 31B", params: "31B", effectiveB: 31, tier: "good", emoji: "🟣" },
-  { id: "or-gemma4-26b", provider: "OpenRouter", label: "Gemma 4 26B A4B", params: "26B MoE", effectiveB: 26, tier: "good", emoji: "🟣" },
-  // HuggingFace
+  // HuggingFace (Llama 3.2 11B-Vision dropped — Qwen pair covers vision)
   { id: "hf-qwen-vl72b", provider: "HuggingFace", label: "Qwen 2.5 VL 72B", params: "72B", effectiveB: 72, tier: "good", emoji: "🟡" },
   { id: "hf-qwen-vl7b", provider: "HuggingFace", label: "Qwen 2.5 VL 7B", params: "7B", effectiveB: 7, tier: "caution", emoji: "🟡" },
-  { id: "hf-llama32v", provider: "HuggingFace", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟡" },
-  // Cerebras
-  { id: "cerebras-qwen235", provider: "Cerebras", label: "Qwen 3 235B MoE", params: "235B", effectiveB: 235, tier: "flagship", emoji: "⚡" },
+  // Cerebras (deprecated llama3.1-8b + qwen-3-235b removed — sunset 27 May 2026)
   { id: "cerebras-gpt-oss", provider: "Cerebras", label: "GPT-OSS 120B", params: "120B", effectiveB: 120, tier: "recommended", emoji: "⚡" },
   { id: "cerebras-glm", provider: "Cerebras", label: "GLM 4.7", params: "~9B", effectiveB: 9, tier: "good", emoji: "⚡" },
-  { id: "cerebras-llama8b", provider: "Cerebras", label: "Llama 3.1 8B", params: "8B", effectiveB: 8, tier: "caution", emoji: "⚡" },
-  // NVIDIA
+  // NVIDIA (11B sibling dropped — 90B supersedes it)
   { id: "nvidia-maverick", provider: "NVIDIA", label: "Llama 4 Maverick", params: "17B×128E", effectiveB: 400, tier: "good", emoji: "🟢" },
   { id: "nvidia-llama32-90b", provider: "NVIDIA", label: "Llama 3.2 90B", params: "90B", effectiveB: 90, tier: "good", emoji: "🟢" },
   { id: "nvidia-nemotron", provider: "NVIDIA", label: "Nemotron Super 49B", params: "49B", effectiveB: 49, tier: "good", emoji: "🟢" },
-  { id: "nvidia-llama32-11b", provider: "NVIDIA", label: "Llama 3.2 11B", params: "11B", effectiveB: 11, tier: "limited", emoji: "🟢" },
-  // GitHub
+  // GitHub (gpt5-nano + phi4-mini dropped — too small for stock prompts)
   { id: "github-gpt5", provider: "GitHub", label: "GPT-5", params: "~1T+", effectiveB: 1000, tier: "flagship", emoji: "⬛" },
   { id: "github-gpt5-mini", provider: "GitHub", label: "GPT-5 Mini", params: "~200B+", effectiveB: 200, tier: "recommended", emoji: "⬛" },
   { id: "github-gpt4o", provider: "GitHub", label: "GPT-4o", params: "~200B+", effectiveB: 200, tier: "recommended", emoji: "⬛" },
@@ -92,8 +92,6 @@ const MODELS = [
   { id: "github-phi4", provider: "GitHub", label: "Phi-4", params: "14B", effectiveB: 14, tier: "limited", emoji: "⬛" },
   { id: "github-phi4-mm", provider: "GitHub", label: "Phi-4 Multimodal", params: "14B", effectiveB: 14, tier: "limited", emoji: "⬛" },
   { id: "github-llama70", provider: "GitHub", label: "Llama 3.3 70B", params: "70B", effectiveB: 70, tier: "good", emoji: "⬛" },
-  { id: "github-phi4-mini", provider: "GitHub", label: "Phi-4 Mini", params: "3.8B", effectiveB: 3.8, tier: "caution", emoji: "⬛" },
-  { id: "github-gpt5-nano", provider: "GitHub", label: "GPT-5 Nano", params: "~8B", effectiveB: 8, tier: "limited", emoji: "⬛" },
 ];
 
 // ─── Feature / Button definitions ───────────────────────────────────

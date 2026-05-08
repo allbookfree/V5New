@@ -17,6 +17,7 @@ const MARKETPLACES = [
     url: "https://stock.adobe.com",
     logo: "🅰️",
     color: "#FF0000",
+    aiPolicy: "direct",
     earnings: "33%",
     review: "1-7 days",
     payout: "$25 min",
@@ -55,6 +56,7 @@ const MARKETPLACES = [
     url: "https://submit.shutterstock.com",
     logo: "📷",
     color: "#EE2D24",
+    aiPolicy: "manual",
     earnings: "$0.10-$0.33/download",
     review: "Instant AI review",
     payout: "$35 min",
@@ -93,6 +95,7 @@ const MARKETPLACES = [
     url: "https://contributor.freepik.com",
     logo: "🎨",
     color: "#0062FF",
+    aiPolicy: "direct",
     earnings: "30-60%",
     review: "1-3 days",
     payout: "$100 min",
@@ -131,6 +134,7 @@ const MARKETPLACES = [
     url: "https://www.gettyimages.com/workwithus",
     logo: "📸",
     color: "#000000",
+    aiPolicy: "manual",
     earnings: "15-45%",
     review: "3-14 days",
     payout: "$100 min",
@@ -169,6 +173,7 @@ const MARKETPLACES = [
     url: "https://www.dreamstime.com/sell",
     logo: "💭",
     color: "#00BF63",
+    aiPolicy: "direct",
     earnings: "25-50%",
     review: "1-5 days",
     payout: "$100 min",
@@ -207,6 +212,7 @@ const MARKETPLACES = [
     url: "https://www.vecteezy.com/contributors",
     logo: "✨",
     color: "#FF6B35",
+    aiPolicy: "direct",
     earnings: "50%",
     review: "1-3 days",
     payout: "$50 min",
@@ -245,6 +251,7 @@ const MARKETPLACES = [
     url: "https://www.pond5.com/sell-media",
     logo: "🎬",
     color: "#FF4F00",
+    aiPolicy: "manual",
     earnings: "40-60%",
     review: "Instant-7 days",
     payout: "$25 min",
@@ -283,6 +290,7 @@ const MARKETPLACES = [
     url: "https://www.123rf.com/contributors",
     logo: "🖼️",
     color: "#0078FF",
+    aiPolicy: "direct",
     earnings: "30-60%",
     review: "1-3 days",
     payout: "$50 min",
@@ -321,6 +329,7 @@ const MARKETPLACES = [
     url: "https://www.canva.com/creators/",
     logo: "🎯",
     color: "#00C4CC",
+    aiPolicy: "direct",
     earnings: "$0.35/use (templates)",
     review: "7-14 days",
     payout: "$10 min",
@@ -353,6 +362,7 @@ const MARKETPLACES = [
     url: "https://www.etsy.com/sell",
     logo: "🛍️",
     color: "#F56400",
+    aiPolicy: "direct",
     earnings: "You set price (minus 6.5% + $0.20)",
     review: "Instant",
     payout: "Weekly",
@@ -388,6 +398,7 @@ const MARKETPLACES = [
     url: "https://creativemarket.com/sell",
     logo: "💎",
     color: "#48A7F2",
+    aiPolicy: "manual",
     earnings: "50%",
     review: "Application required",
     payout: "$20 min",
@@ -423,6 +434,7 @@ const MARKETPLACES = [
     url: "https://gumroad.com",
     logo: "🚀",
     color: "#FF90E8",
+    aiPolicy: "direct",
     earnings: "You set price (minus 10%)",
     review: "Instant",
     payout: "Weekly",
@@ -453,6 +465,309 @@ const MARKETPLACES = [
         en: "Sell video template packs, LUTs, and motion graphics bundles.",
         bn: "ভিডিও টেমপ্লেট প্যাক, LUT ও মোশন গ্রাফিক্স বান্ডেল বিক্রি করুন।"
       }
+    }
+  },
+  {
+    id: "depositphotos",
+    name: "Depositphotos",
+    url: "https://contributor.depositphotos.com",
+    logo: "🗂️",
+    color: "#00B0FF",
+    aiPolicy: "manual",
+    earnings: "34-42%",
+    review: "1-7 days",
+    payout: "$50 min",
+    strengths: { en: "Established global stock — pure AI rejected through main portal, but vectors and human-curated content welcome", bn: "প্রতিষ্ঠিত গ্লোবাল স্টক — মূল পোর্টালে pure AI বাতিল, কিন্তু ভেক্টর ও মানুষের ছোঁয়া দেওয়া কন্টেন্ট গ্রহণযোগ্য" },
+    image: {
+      support: true,
+      rating: 3,
+      bestModes: ["engineer", "background-texture", "mockup"],
+      tips: {
+        en: "Apply your own edit pass before upload — Depositphotos rejects raw AI through the standard portal. Vectors and curated retouches do well.",
+        bn: "আপলোডের আগে নিজের এডিট পাস দিন — Depositphotos স্ট্যান্ডার্ড পোর্টালে raw AI বাতিল করে। ভেক্টর ও কিউরেটেড রিটাচ ভালো করে।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 4,
+      bestModes: ["icon-pack", "pattern", "clipart-bundle", "social-template"],
+      tips: {
+        en: "Vectors are the safest path here. Clean designer-grade icon packs and patterns sell consistently.",
+        bn: "এখানে ভেক্টরই সবচেয়ে নিরাপদ পথ। পরিষ্কার ডিজাইনার-গ্রেড আইকন প্যাক ও প্যাটার্ন ধারাবাহিকভাবে বিক্রি হয়।"
+      }
+    },
+    video: {
+      support: true,
+      rating: 3,
+      bestModes: ["auto", "engineer"],
+      tips: {
+        en: "Stable, professional-looking clips only — apply a real edit/grade pass to hide AI tells.",
+        bn: "শুধু স্থিতিশীল, প্রফেশনাল-লুকিং ক্লিপ — AI চিহ্ন লুকাতে আসল এডিট/গ্রেড পাস দিন।"
+      }
+    }
+  },
+  {
+    id: "envato",
+    name: "Envato Elements",
+    url: "https://elements.envato.com/become-an-author",
+    logo: "🟢",
+    color: "#82B541",
+    aiPolicy: "manual",
+    earnings: "Subscription share",
+    review: "Curation required",
+    payout: "Monthly",
+    strengths: { en: "Subscription marketplace for templates, graphics, video, music — pure raw AI not accepted; curated and edited assets only", bn: "টেমপ্লেট, গ্রাফিক্স, ভিডিও ও মিউজিকের সাবস্ক্রিপশন মার্কেটপ্লেস — pure raw AI গ্রহণযোগ্য নয়; শুধু কিউরেটেড ও এডিটেড সম্পদ" },
+    image: {
+      support: true,
+      rating: 2,
+      bestModes: ["engineer", "background-texture", "mockup"],
+      tips: {
+        en: "Heavy curation pass required. Envato favours polished, ready-to-use assets — never upload unedited AI output.",
+        bn: "ভারী কিউরেশন পাস প্রয়োজন। Envato পলিশড, রেডি-টু-ইউজ সম্পদ পছন্দ করে — কখনোই unedited AI আউটপুট আপলোড করবেন না।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 4,
+      bestModes: ["icon-pack", "pattern", "logo-element", "social-template", "infographic"],
+      tips: {
+        en: "Strong vector market. Editable, layered, well-organised files do best.",
+        bn: "শক্তিশালী ভেক্টর মার্কেট। এডিটেবল, লেয়ারড, সুসংগঠিত ফাইল সবচেয়ে ভালো করে।"
+      }
+    },
+    video: {
+      support: true,
+      rating: 3,
+      bestModes: ["motion-graphics", "engineer", "collection"],
+      tips: {
+        en: "Motion graphics templates and stock footage do well — but every clip needs a human edit/grade pass before submission.",
+        bn: "মোশন গ্রাফিক্স টেমপ্লেট ও স্টক ফুটেজ ভালো করে — কিন্তু সাবমিশনের আগে প্রতিটি ক্লিপে মানুষের এডিট/গ্রেড পাস লাগবে।"
+      }
+    }
+  },
+  {
+    id: "wirestock",
+    name: "Wirestock",
+    url: "https://wirestock.io",
+    logo: "🔌",
+    color: "#7C3AED",
+    aiPolicy: "direct",
+    earnings: "Aggregator share",
+    review: "Aggregator-managed",
+    payout: "Varies",
+    strengths: { en: "AI-friendly aggregator that submits to multiple stock sites in one upload — great for AI creators", bn: "AI-বান্ধব অ্যাগ্রিগেটর — এক আপলোডে একাধিক স্টক সাইটে সাবমিট করে, AI ক্রিয়েটরদের জন্য চমৎকার" },
+    image: {
+      support: true,
+      rating: 4,
+      bestModes: ["engineer", "background-texture", "mockup", "wall-art"],
+      tips: {
+        en: "Wirestock submits one upload to many networks. AI is welcome — disclose properly and let the aggregator handle distribution.",
+        bn: "Wirestock এক আপলোড অনেক নেটওয়ার্কে পাঠায়। AI স্বাগত — সঠিকভাবে প্রকাশ করুন এবং অ্যাগ্রিগেটরকে বিতরণ করতে দিন।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 3,
+      bestModes: ["icon-pack", "pattern", "clipart-bundle"],
+      tips: {
+        en: "Vectors flow through the aggregator into multiple downstream marketplaces.",
+        bn: "ভেক্টর অ্যাগ্রিগেটরের মাধ্যমে একাধিক ডাউনস্ট্রিম মার্কেটপ্লেসে প্রবাহিত হয়।"
+      }
+    },
+    video: {
+      support: true,
+      rating: 3,
+      bestModes: ["auto", "b-roll", "loopable"],
+      tips: {
+        en: "Short clips and loops fan out across the network — good way to monetise AI video output at scale.",
+        bn: "ছোট ক্লিপ ও লুপ নেটওয়ার্ক জুড়ে ছড়িয়ে পড়ে — স্কেলে AI ভিডিও আউটপুট মনিটাইজ করার ভালো উপায়।"
+      }
+    }
+  },
+  {
+    id: "redbubble",
+    name: "Redbubble / Teepublic",
+    url: "https://www.redbubble.com/sell",
+    logo: "👕",
+    color: "#E41B23",
+    aiPolicy: "direct",
+    earnings: "10-30% margin",
+    review: "Instant",
+    payout: "$20 min",
+    strengths: { en: "Print-on-demand giant — apparel, stickers, prints, home goods. AI welcome; designs need to scale across product surfaces", bn: "Print-on-demand দৈত্য — পোশাক, স্টিকার, প্রিন্ট, হোম গুডস। AI স্বাগত; ডিজাইন প্রোডাক্ট সারফেস জুড়ে স্কেল করতে হবে" },
+    image: {
+      support: true,
+      rating: 3,
+      bestModes: ["wall-art", "print-on-demand", "background-texture"],
+      tips: {
+        en: "Wall art and graphics that translate to mugs, totes, and shirts. Transparent backgrounds where possible.",
+        bn: "ওয়াল আর্ট ও গ্রাফিক্স যা মগ, টোট ও শার্টে অনুবাদ করা যায়। সম্ভব হলে স্বচ্ছ ব্যাকগ্রাউন্ড।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 5,
+      bestModes: ["t-shirt-graphic", "sticker-pack", "logo-element", "character-mascot"],
+      tips: {
+        en: "T-shirt graphics, stickers, and decorative vectors are Redbubble's core. Bold silhouettes that work at any size win.",
+        bn: "টি-শার্ট গ্রাফিক্স, স্টিকার ও ডেকোরেটিভ ভেক্টর Redbubble-এর কোর। যেকোনো সাইজে কাজ করা bold silhouette জেতে।"
+      }
+    },
+    video: {
+      support: false,
+      rating: 0,
+      bestModes: [],
+      tips: { en: "POD platform — no video products.", bn: "POD প্ল্যাটফর্ম — কোনো ভিডিও প্রোডাক্ট নেই।" }
+    }
+  },
+  {
+    id: "society6",
+    name: "Society6",
+    url: "https://society6.com/become-an-artist",
+    logo: "🎨",
+    color: "#EF4444",
+    aiPolicy: "direct",
+    earnings: "10% base + custom margins",
+    review: "Instant",
+    payout: "Monthly",
+    strengths: { en: "Curated POD home-goods and art-print marketplace — AI accepted; designs must look gallery-grade", bn: "কিউরেটেড POD হোম-গুডস ও আর্ট-প্রিন্ট মার্কেটপ্লেস — AI গ্রহণযোগ্য; ডিজাইন গ্যালারি-গ্রেড দেখাতে হবে" },
+    image: {
+      support: true,
+      rating: 4,
+      bestModes: ["wall-art", "print-on-demand", "background-texture"],
+      tips: {
+        en: "Strong palettes and gallery-grade compositions. Designs must hold up at small sticker AND large wall-art scale.",
+        bn: "শক্তিশালী প্যালেট ও গ্যালারি-গ্রেড কম্পোজিশন। ডিজাইন ছোট স্টিকার এবং বড় ওয়াল-আর্ট স্কেল উভয়ে কাজ করতে হবে।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 4,
+      bestModes: ["pattern", "clipart-bundle", "logo-element", "sticker-pack"],
+      tips: {
+        en: "Decorative patterns and bold motifs do well across mugs, throw pillows, and apparel.",
+        bn: "ডেকোরেটিভ প্যাটার্ন ও bold মোটিফ মগ, থ্রো পিলো ও পোশাকে ভালো করে।"
+      }
+    },
+    video: {
+      support: false,
+      rating: 0,
+      bestModes: [],
+      tips: { en: "Society6 is a print/home-goods platform — no video.", bn: "Society6 প্রিন্ট/হোম-গুডস প্ল্যাটফর্ম — কোনো ভিডিও নেই।" }
+    }
+  },
+  {
+    id: "pixta",
+    name: "Pixta (Asia / Global)",
+    url: "https://creator.pixtastock.com",
+    logo: "🌏",
+    color: "#0EA5E9",
+    aiPolicy: "direct",
+    earnings: "22-58%",
+    review: "1-3 days",
+    payout: "¥5000 min",
+    strengths: { en: "Japan-headquartered global stock — strong demand for Asian and lifestyle subjects, AI accepted with disclosure", bn: "জাপান-ভিত্তিক গ্লোবাল স্টক — এশিয়ান ও লাইফস্টাইল বিষয়ের শক্তিশালী চাহিদা, প্রকাশসহ AI গ্রহণযোগ্য" },
+    image: {
+      support: true,
+      rating: 4,
+      bestModes: ["engineer", "seasonal", "background-texture"],
+      tips: {
+        en: "Big opportunity for under-supplied non-Western themes — halal, South Asian, Southeast Asian lifestyle. Disclose AI.",
+        bn: "কম-সরবরাহ থাকা non-Western থিমের জন্য বড় সুযোগ — halal, দক্ষিণ এশিয়ান, দক্ষিণ-পূর্ব এশিয়ান লাইফস্টাইল। AI প্রকাশ করুন।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 3,
+      bestModes: ["icon-pack", "pattern", "social-template"],
+      tips: {
+        en: "Crisp, polite design aesthetic with multilingual usability does well.",
+        bn: "মাল্টিলিঙ্গুয়াল ব্যবহারযোগ্যতা সহ পরিষ্কার, মার্জিত ডিজাইন aesthetic ভালো করে।"
+      }
+    },
+    video: {
+      support: true,
+      rating: 3,
+      bestModes: ["auto", "b-roll", "engineer"],
+      tips: {
+        en: "Clean, story-first motion suitable for Japanese and global advertising.",
+        bn: "জাপানিজ ও গ্লোবাল বিজ্ঞাপনের জন্য পরিষ্কার, গল্প-প্রধান motion।"
+      }
+    }
+  },
+  {
+    id: "pixabay",
+    name: "Pixabay (Free + Content Plus)",
+    url: "https://pixabay.com",
+    logo: "🌐",
+    color: "#10B981",
+    aiPolicy: "direct",
+    earnings: "Content Plus revenue share",
+    review: "1-3 days",
+    payout: "Stripe-based",
+    strengths: { en: "Massive free media platform with paid Content Plus tier — AI welcome with disclosure; great audience builder", bn: "বিশাল ফ্রি মিডিয়া প্ল্যাটফর্ম এবং পেইড Content Plus টিয়ার — প্রকাশসহ AI স্বাগত; দারুণ অডিয়েন্স বিল্ডার" },
+    image: {
+      support: true,
+      rating: 3,
+      bestModes: ["background-texture", "engineer", "wall-art"],
+      tips: {
+        en: "Bright, broadly-usable photography and texture/background frames travel furthest.",
+        bn: "উজ্জ্বল, ব্যাপক-ব্যবহারযোগ্য ফটোগ্রাফি ও টেক্সচার/ব্যাকগ্রাউন্ড ফ্রেম সবচেয়ে দূরে পৌঁছায়।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 3,
+      bestModes: ["icon-pack", "pattern", "social-template"],
+      tips: {
+        en: "Clean SVG-friendly vectors usable in web, blog and social.",
+        bn: "ওয়েব, ব্লগ ও সোশ্যালে ব্যবহারযোগ্য পরিষ্কার SVG-বান্ধব ভেক্টর।"
+      }
+    },
+    video: {
+      support: true,
+      rating: 2,
+      bestModes: ["auto", "loopable"],
+      tips: {
+        en: "Light, social-friendly clips with universal appeal.",
+        bn: "সর্বজনীন আবেদনসম্পন্ন হালকা, সোশ্যাল-বান্ধব ক্লিপ।"
+      }
+    }
+  },
+  {
+    id: "amazon-kdp",
+    name: "Amazon KDP (Books / Covers)",
+    url: "https://kdp.amazon.com",
+    logo: "📚",
+    color: "#FF9900",
+    aiPolicy: "manual",
+    earnings: "35-70% royalty",
+    review: "Instant",
+    payout: "Monthly",
+    strengths: { en: "Self-publishing giant for books, journals and low-content notebooks — AI covers/interiors allowed with disclosure but require a clear human edit pass", bn: "বই, জার্নাল ও low-content নোটবুকের জন্য self-publishing দৈত্য — প্রকাশসহ AI কভার/ইন্টেরিয়র অনুমোদিত, কিন্তু স্পষ্ট মানব এডিট পাস দরকার" },
+    image: {
+      support: true,
+      rating: 3,
+      bestModes: ["wall-art", "print-on-demand", "engineer"],
+      tips: {
+        en: "Cover art, journal interiors, and low-content notebook backgrounds. Disclose AI in KDP form. Run a real human curation pass.",
+        bn: "কভার আর্ট, জার্নাল ইন্টেরিয়র ও low-content নোটবুক ব্যাকগ্রাউন্ড। KDP ফর্মে AI প্রকাশ করুন। আসল মানব কিউরেশন পাস চালান।"
+      }
+    },
+    vector: {
+      support: true,
+      rating: 4,
+      bestModes: ["pattern", "clipart-bundle", "social-template", "logo-element"],
+      tips: {
+        en: "Vector cover art, page borders and patterns are KDP's sweet spot — they reproduce flawlessly at any trim size.",
+        bn: "ভেক্টর কভার আর্ট, পেজ বর্ডার ও প্যাটার্ন KDP-র sweet spot — যেকোনো ট্রিম সাইজে নিখুঁতভাবে পুনরুৎপাদন হয়।"
+      }
+    },
+    video: {
+      support: false,
+      rating: 0,
+      bestModes: [],
+      tips: { en: "KDP is a print/eBook platform — no video.", bn: "KDP প্রিন্ট/eBook প্ল্যাটফর্ম — কোনো ভিডিও নেই।" }
     }
   }
 ];
@@ -607,25 +922,35 @@ export default function MarketplaceGuidePage() {
                         </span>
                       );
                     })}
-                    {(["adobe", "shutterstock", "freepik", "getty", "dreamstime", "vecteezy", "pond5", "creative-market", "creativemarket"].includes(market.id)) ? (
+                    {market.aiPolicy === "direct" ? (
                       <span style={{
                         display: "inline-flex", alignItems: "center", gap: 3,
                         fontSize: 10, padding: "2px 6px", borderRadius: 4,
                         background: "rgba(16, 185, 129, 0.12)", color: "#10b981", fontWeight: 700,
                         border: "1px solid rgba(16, 185, 129, 0.3)"
-                      }} title={lang === "bn" ? "এই প্ল্যাটফর্মের জন্য প্রম্পট জেনারেটর + মেটাডেটা জেনারেটর সরাসরি অপ্টিমাইজ করতে পারে" : "Prompt generator + metadata generator can directly tune output for this platform"}>
-                        ✓ {lang === "bn" ? "অপ্টিমাইজড" : "Optimized"}
+                      }} title={lang === "bn" ? "এই মার্কেটপ্লেস AI কন্টেন্ট প্রকাশসহ সরাসরি গ্রহণ করে — সরাসরি আপলোড করা যাবে।" : "This marketplace officially accepts AI content with disclosure — upload directly."}>
+                        ✅ {lang === "bn" ? "AI সরাসরি" : "AI Direct"}
                       </span>
-                    ) : (
+                    ) : market.aiPolicy === "manual" ? (
                       <span style={{
                         display: "inline-flex", alignItems: "center", gap: 3,
                         fontSize: 10, padding: "2px 6px", borderRadius: 4,
                         background: "rgba(245, 158, 11, 0.12)", color: "#f59e0b", fontWeight: 700,
                         border: "1px solid rgba(245, 158, 11, 0.3)"
-                      }} title={lang === "bn" ? "শুধু গাইড — প্রম্পট/মেটাডেটা জেনারেটরে এই প্ল্যাটফর্মের নিজস্ব অপ্টিমাইজেশন এখনো নেই (\"All Marketplaces\" বা মিলিয়ে একটা সিলেক্ট করো)" : "Guide-only — prompt/metadata generator does not have a dedicated optimization profile for this platform yet (use \"All Marketplaces\" or pick a similar one)"}>
-                        {lang === "bn" ? "শুধু গাইড" : "Guide-only"}
+                      }} title={lang === "bn" ? "এই মার্কেটপ্লেস সরাসরি AI আউটপুট গ্রহণ করে না — আপলোডের আগে নিজের হাতের ছোঁয়ায় এডিট/কিউরেশন পাস দিতে হবে।" : "This marketplace doesn't accept raw AI output — apply your own manual edit/curation pass before upload."}>
+                        ⚠️ {lang === "bn" ? "হাতের ছোঁয়া দরকার" : "Manual Touch"}
                       </span>
-                    )}
+                    ) : null}
+                    {(["adobe", "shutterstock", "freepik", "getty", "dreamstime", "vecteezy", "pond5", "creative-market", "creativemarket", "depositphotos", "envato", "wirestock", "redbubble", "society6", "pixta", "pixabay", "amazon-kdp", "123rf", "etsy"].includes(market.id)) ? (
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 3,
+                        fontSize: 10, padding: "2px 6px", borderRadius: 4,
+                        background: "rgba(99, 102, 241, 0.12)", color: "#6366f1", fontWeight: 700,
+                        border: "1px solid rgba(99, 102, 241, 0.3)"
+                      }} title={lang === "bn" ? "প্রম্পট জেনারেটর এই মার্কেটপ্লেসের জন্য নির্দিষ্ট aesthetic গাইডেন্স ও AI পলিসি সম্বন্ধে জানে।" : "Prompt generator has a tailored aesthetic + AI-policy profile for this marketplace."}>
+                        ✓ {lang === "bn" ? "অপ্টিমাইজড" : "Optimized"}
+                      </span>
+                    ) : null}
                   </div>
                   <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--text3)" }}>
                     {market.strengths[lang] || market.strengths.en}
