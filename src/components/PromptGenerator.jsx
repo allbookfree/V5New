@@ -16,6 +16,20 @@ import { getUpcomingFestivals, getFestivalContext } from "@/lib/festivalCalendar
 import { PROVIDERS_UI, MODEL_LABELS, PROVIDER_KEY_MAP } from "@/config/models";
 import { recordUsage, getBestAvailableProvider } from "@/lib/usageTracker";
 
+// Marketplaces that do NOT accept raw AI output through their standard
+// contributor portal. Selecting one of these surfaces a manual-touch hint
+// so users know to apply their own editing pass before upload (and to
+// prefer vector / template / curated formats where possible).
+const MANUAL_TOUCH_MARKETS = new Set([
+  "shutterstock",
+  "getty",
+  "depositphotos",
+  "pond5",
+  "creativemarket",
+  "envato",
+  "amazon-kdp",
+]);
+
 const SPECIAL_MODES_BY_TYPE = {
   image: [
     { value: "surreal",           labelKey: "prompt.surreal",          tipKey: "prompt.surrealTip",          icon: Sparkles,   color: "#8b5cf6" },
@@ -784,19 +798,36 @@ Keep the same subject and core idea, but make the new version more specific, mor
               <label className="field-label" htmlFor="market-select">{t("prompt.optimizeForPlatform")}</label>
               <select id="market-select" className="field" value={targetMarket} onChange={e => setTargetMarket(e.target.value)}>
                 <option value="all">{t("prompt.allMarketplaces")}</option>
-                <option value="adobe">Adobe Stock</option>
-                <option value="shutterstock">Shutterstock</option>
-                <option value="freepik">Freepik</option>
-                <option value="getty">Getty Images / iStock</option>
-                <option value="dreamstime">Dreamstime / Depositphotos</option>
-                <option value="vecteezy">Vecteezy</option>
-                <option value="pond5">Pond5 (Video)</option>
-                <option value="creativemarket">Creative Market</option>
-                <option value="envato">Envato Elements</option>
-                <option value="etsy">Etsy (Digital/POD)</option>
-                <option value="wirestock">Wirestock</option>
-                <option value="redbubble">Redbubble / Teepublic</option>
+                <optgroup label={t("prompt.mpGroupDirect")}>
+                  <option value="adobe">✅ Adobe Stock</option>
+                  <option value="freepik">✅ Freepik</option>
+                  <option value="dreamstime">✅ Dreamstime</option>
+                  <option value="vecteezy">✅ Vecteezy</option>
+                  <option value="etsy">✅ Etsy (Digital / POD)</option>
+                  <option value="wirestock">✅ Wirestock</option>
+                  <option value="redbubble">✅ Redbubble / Teepublic</option>
+                  <option value="123rf">✅ 123RF</option>
+                  <option value="pixta">✅ Pixta (Asia / Global)</option>
+                  <option value="society6">✅ Society6 (POD)</option>
+                  <option value="pixabay">✅ Pixabay</option>
+                </optgroup>
+                <optgroup label={t("prompt.mpGroupManual")}>
+                  <option value="shutterstock">⚠️ Shutterstock</option>
+                  <option value="getty">⚠️ Getty Images / iStock</option>
+                  <option value="depositphotos">⚠️ Depositphotos</option>
+                  <option value="pond5">⚠️ Pond5 (Video)</option>
+                  <option value="creativemarket">⚠️ Creative Market</option>
+                  <option value="envato">⚠️ Envato Elements</option>
+                  <option value="amazon-kdp">⚠️ Amazon KDP (Book Covers)</option>
+                </optgroup>
               </select>
+              {targetMarket !== "all" && (
+                <div className={`market-policy-hint ${MANUAL_TOUCH_MARKETS.has(targetMarket) ? "manual" : "direct"}`}>
+                  {MANUAL_TOUCH_MARKETS.has(targetMarket)
+                    ? t("prompt.mpPolicyManualHint")
+                    : t("prompt.mpPolicyDirectHint")}
+                </div>
+              )}
             </div>
           </div>
 

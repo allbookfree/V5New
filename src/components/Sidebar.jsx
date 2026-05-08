@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Sparkles, Image, Palette, Video, KeyRound, PanelLeftClose, PanelLeftOpen, X, Moon, Sun, Languages, BarChart3, History, Activity, Store, BookOpen } from "lucide-react";
+import { Home, Sparkles, Image, Palette, Video, KeyRound, PanelLeftClose, PanelLeftOpen, X, Moon, Sun, Languages, BarChart3, History, Activity, Store, BookOpen, LayoutGrid } from "lucide-react";
 import SettingsModal from "./SettingsModal";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -17,6 +17,7 @@ const linkKeys = [
   { key: "nav.history", href: "/history", icon: History },
   { key: "analytics.navLabel", href: "/analytics", icon: BarChart3 },
   { key: "nav.marketplaceGuide", href: "/marketplace-guide", icon: Store },
+  { key: "nav.featureGuide", href: "/feature-guide", icon: LayoutGrid },
   { key: "nav.modelGuide", href: "/model-guide", icon: BookOpen },
   { key: "nav.apiStatus", href: "/api-status", icon: Activity },
 ];
