@@ -21,6 +21,12 @@ const DEFAULT_KEYS = {
   cerebras: [""],
   nvidia: [""],
   github: [""],
+  // Stock-image data providers — used by /market-trends to surface
+  // real download counts and curated photo / video feeds. They are
+  // NOT LLM providers, so they intentionally have no model selector
+  // or vision-model entries.
+  pixabay: [""],
+  pexels: [""],
 };
 const DEFAULT_MODE = "local";
 const DEFAULT_SELECTED_MODELS = {
@@ -99,6 +105,8 @@ function normalizeKeyBag(parsed) {
     cerebras: normalizeKeys(parsed.cerebras),
     nvidia: normalizeKeys(parsed.nvidia),
     github: normalizeKeys(parsed.github),
+    pixabay: normalizeKeys(parsed.pixabay),
+    pexels: normalizeKeys(parsed.pexels),
   };
 }
 
@@ -313,6 +321,17 @@ export function ApiKeyProvider({ children }) {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
           body: JSON.stringify({ model: "gpt-4o-mini", messages: [{ role: "user", content: "hi" }], max_tokens: 1 }),
+        });
+      } else if (provider === "pixabay") {
+        // Pixabay returns 400 with a clear `[ERROR ...]` body for an
+        // invalid key, 200 + JSON for a valid one. We don't pass a
+        // query string so the response is tiny.
+        res = await fetch(`https://pixabay.com/api/?key=${encodeURIComponent(key)}&per_page=3`);
+      } else if (provider === "pexels") {
+        // Pexels returns 200 / curated photos for a valid key, 401
+        // for an invalid one. per_page=1 keeps the round-trip cheap.
+        res = await fetch("https://api.pexels.com/v1/curated?per_page=1", {
+          headers: { Authorization: key }
         });
       } else {
         setTestResult(prev => ({ ...prev, [id]: { success: false, message: `Unsupported provider: ${provider}` } }));
