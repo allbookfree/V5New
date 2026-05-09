@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import {
   TrendingUp, RefreshCw, ExternalLink, Calendar, Store,
   Lightbulb, ChevronDown, ChevronUp, Globe, Sparkles, AlertTriangle,
+  Image as ImageIcon, Palette, Video, Filter,
 } from "lucide-react";
 
 // ─── Geo presets for the live Google Trends RSS feed ─────────────────
@@ -269,7 +270,14 @@ export default function MarketTrendsPage() {
     geoLabel: lang === "bn" ? "অঞ্চল" : "Region",
     fetchedAt: lang === "bn" ? "শেষ আপডেট" : "Last updated",
     traffic: lang === "bn" ? "আনুমানিক ট্রাফিক" : "Approx. traffic",
-    usePrompt: lang === "bn" ? "প্রম্পট হিসেবে ব্যবহার" : "Use as prompt",
+    generateAs: lang === "bn" ? "জেনারেট করুন" : "Generate as",
+    image: lang === "bn" ? "ছবি" : "Image",
+    vector: lang === "bn" ? "ভেক্টর" : "Vector",
+    video: lang === "bn" ? "ভিডিও" : "Video",
+    relevanceLow: lang === "bn" ? "স্টক-অপ্রাসঙ্গিক" : "Low stock relevance",
+    relevanceHigh: lang === "bn" ? "স্টক-উপযোগী" : "Stock-friendly",
+    showAll: lang === "bn" ? "সব দেখান" : "Show all",
+    hideLow: lang === "bn" ? "কম-প্রাসঙ্গিক লুকান" : "Hide low-relevance",
     relatedNews: lang === "bn" ? "সম্পর্কিত খবর" : "Related news",
     noTrends: lang === "bn" ? "এখন trend লোড করা যায়নি — কিছুক্ষণ পর আবার চেষ্টা করুন।" : "Couldn't load trends right now — try again in a minute.",
     seasonalTitle: lang === "bn" ? "মৌসুমী niche ক্যালেন্ডার" : "Seasonal niche calendar",
@@ -324,7 +332,26 @@ export default function MarketTrendsPage() {
   }, [geo, refreshKey]);
 
   const handleRefresh = () => setRefreshKey(k => k + 1);
-  const promptHrefFor = (query) => `/prompt-generator?seed=${encodeURIComponent(query)}`;
+
+  // Per-format deep links into the corresponding generator. The
+  // `autorun=1` flag tells the generator page to fire its main Generate
+  // handler immediately after the seed is committed, so the user gets
+  // a one-click experience from a trending keyword to a generated batch
+  // of prompts.
+  const generatorHrefFor = (query, fmt) => {
+    const path = fmt === "vector"
+      ? "/vector-generator"
+      : fmt === "video"
+        ? "/video-generator"
+        : "/prompt-generator";
+    return `${path}?seed=${encodeURIComponent(query)}&autorun=1`;
+  };
+
+  const [hideLowRelevance, setHideLowRelevance] = useState(true);
+  const visibleTrends = useMemo(() => {
+    if (!hideLowRelevance) return data.trends;
+    return data.trends.filter(t => (t.relevanceScore ?? 5) >= 3);
+  }, [data.trends, hideLowRelevance]);
 
   return (
     <div className="page-container">
@@ -385,6 +412,28 @@ export default function MarketTrendsPage() {
           })}
         </div>
 
+        {/* Relevance filter toggle */}
+        {data.trends.length > 0 && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8, marginBottom: 10,
+            fontSize: 11, color: "var(--text3)",
+          }}>
+            <Filter size={12} />
+            <button type="button" onClick={() => setHideLowRelevance(v => !v)}
+              style={{
+                padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                background: hideLowRelevance ? "rgba(16,185,129,0.10)" : "var(--card)",
+                color: hideLowRelevance ? "#10b981" : "var(--text2)",
+                fontSize: 11, fontWeight: 600, cursor: "pointer",
+              }}>
+              {hideLowRelevance ? labels.hideLow : labels.showAll}
+            </button>
+            <span style={{ color: "var(--text4)" }}>
+              ({visibleTrends.length} / {data.trends.length})
+            </span>
+          </div>
+        )}
+
         {/* Trends list */}
         {data.error && data.trends.length === 0 ? (
           <div style={{
@@ -398,7 +447,11 @@ export default function MarketTrendsPage() {
           }}>
             {data.loading && data.trends.length === 0
               ? Array.from({ length: 6 }).map((_, i) => <div key={i} style={skeletonCardStyle} />)
-              : data.trends.map((t) => (
+              : visibleTrends.map((t) => {
+                const score = t.relevanceScore ?? 5;
+                const isLow = score < 3;
+                const isHigh = score >= 7;
+                return (
                 <article key={t.title} style={trendCardStyle}>
                   <div style={{ display: "flex", gap: 10 }}>
                     {t.picture ? (
@@ -418,6 +471,16 @@ export default function MarketTrendsPage() {
                           {labels.traffic}: {t.traffic}
                         </div>
                       )}
+                      {(isLow || isHigh) && (
+                        <div style={{
+                          marginTop: 4, display: "inline-block",
+                          padding: "2px 6px", borderRadius: 4, fontSize: 9, fontWeight: 700,
+                          background: isLow ? "rgba(245,158,11,0.15)" : "rgba(16,185,129,0.15)",
+                          color: isLow ? "#f59e0b" : "#10b981",
+                        }}>
+                          {isLow ? labels.relevanceLow : labels.relevanceHigh}
+                        </div>
+                      )}
                     </div>
                   </div>
                   {t.newsItems && t.newsItems.length > 0 && (
@@ -432,16 +495,37 @@ export default function MarketTrendsPage() {
                       ))}
                     </div>
                   )}
-                  <Link href={promptHrefFor(t.title)} style={{
-                    marginTop: 10, display: "inline-flex", alignItems: "center", gap: 4,
-                    padding: "6px 10px", borderRadius: 8, background: "rgba(99,102,241,0.12)",
-                    color: "#6366f1", fontSize: 11, fontWeight: 700, textDecoration: "none",
-                    width: "fit-content",
-                  }}>
-                    <Sparkles size={11} /> {labels.usePrompt}
-                  </Link>
+                  <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 4 }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text3)", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      {labels.generateAs}
+                    </div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      <Link href={generatorHrefFor(t.title, "image")} style={{
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                        padding: "6px 10px", borderRadius: 8, background: "rgba(99,102,241,0.12)",
+                        color: "#6366f1", fontSize: 11, fontWeight: 700, textDecoration: "none",
+                      }}>
+                        <ImageIcon size={11} /> {labels.image}
+                      </Link>
+                      <Link href={generatorHrefFor(t.title, "vector")} style={{
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                        padding: "6px 10px", borderRadius: 8, background: "rgba(6,182,212,0.12)",
+                        color: "#06b6d4", fontSize: 11, fontWeight: 700, textDecoration: "none",
+                      }}>
+                        <Palette size={11} /> {labels.vector}
+                      </Link>
+                      <Link href={generatorHrefFor(t.title, "video")} style={{
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                        padding: "6px 10px", borderRadius: 8, background: "rgba(249,115,22,0.12)",
+                        color: "#f97316", fontSize: 11, fontWeight: 700, textDecoration: "none",
+                      }}>
+                        <Video size={11} /> {labels.video}
+                      </Link>
+                    </div>
+                  </div>
                 </article>
-              ))}
+                );
+              })}
           </div>
         )}
         {data.fetchedAt && (

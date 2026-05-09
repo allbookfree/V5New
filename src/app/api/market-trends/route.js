@@ -1,4 +1,5 @@
 import { enforceSameOrigin, fetchWithTimeout, jsonError } from "@/lib/apiUtils";
+import { scoreStockRelevance } from "@/lib/marketTrendsRelevance";
 
 /**
  * /api/market-trends — server-side proxy for Google Trends "daily search
@@ -96,7 +97,9 @@ export async function GET(request) {
     });
   }
 
-  const trends = parseGoogleTrendsRss(xml).slice(0, MAX_TRENDS);
+  const trends = parseGoogleTrendsRss(xml)
+    .map(t => ({ ...t, relevanceScore: scoreStockRelevance(t.title, t.newsItems) }))
+    .slice(0, MAX_TRENDS);
   cache.set(geo, { fetchedAt: now, trends });
 
   return jsonResponse({

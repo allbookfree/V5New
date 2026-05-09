@@ -193,23 +193,38 @@ export default function PromptGenerator({
 
   const [mounted, setMounted] = useState(false);
 
+  // When `?autorun=1` accompanies `?seed=...`, fire the generate handler
+  // automatically once the seeded concept is committed. We stash the
+  // request in this state flag instead of calling generate() directly
+  // from the URL-reading effect, because generate() reads the latest
+  // `concept` from React state and that state hasn't been flushed yet
+  // at the moment we call setConcept(). A separate effect downstream
+  // watches for (pendingAutorun && concept ready) and triggers it then.
+  const [pendingAutorun, setPendingAutorun] = useState(false);
+
   // Seed the prompt input from a `?seed=...` URL query param (used by
-  // /market-trends "Use as prompt" buttons, and any future deep-link
-  // entry point). The setConcept call is wrapped in an async IIFE so it
-  // doesn't sit in the synchronous body of the effect — that satisfies
-  // the react-hooks/set-state-in-effect lint rule. We also strip the
-  // seed param from the URL after applying it so a refresh / share
-  // doesn't keep re-applying the same seed.
+  // /market-trends per-format buttons and any other deep-link entry
+  // point). When `?autorun=1` is also present, also schedule an
+  // automatic generate as soon as the concept is committed. The
+  // setConcept call is wrapped in an async IIFE so it doesn't sit in
+  // the synchronous body of the effect — that satisfies the
+  // react-hooks/set-state-in-effect lint rule. We also strip the seed
+  // and autorun params from the URL after applying them so a refresh
+  // / share doesn't keep re-applying the same seed or re-firing
+  // generate.
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const params = new URLSearchParams(window.location.search);
     const seed = params.get("seed");
     if (!seed) return undefined;
+    const autorun = params.get("autorun") === "1";
     let cancelled = false;
     (async () => {
       if (cancelled) return;
       setConcept(seed);
+      if (autorun) setPendingAutorun(true);
       params.delete("seed");
+      params.delete("autorun");
       const remaining = params.toString();
       const cleanUrl = window.location.pathname + (remaining ? `?${remaining}` : "");
       window.history.replaceState({}, "", cleanUrl);
@@ -280,6 +295,7 @@ export default function PromptGenerator({
     [keys],
   );
   const hasApiKey = apiKeys.length > 0;
+  const hasGeminiKey = mounted && getAllKeys("gemini").some(k => k.trim());
 
   // All localStorage-based initial state is now read via lazy useState
   // initializers above, eliminating set-state-in-effect lint errors.
@@ -635,6 +651,30 @@ Keep the same subject and core idea, but make the new version more specific, mor
     }
   };
 
+  // Fire generate() once the URL-driven seed has been committed and the
+  // component is fully mounted. The effect closure captures the latest
+  // `generate` (recreated every render and reading current state via
+  // its own closures), so calling it directly here picks up the seeded
+  // concept correctly. We flip pendingAutorun to false immediately so
+  // the effect can't re-fire even if generate triggers another render.
+  useEffect(() => {
+    if (!pendingAutorun) return undefined;
+    if (!mounted) return undefined;
+    if (loading) return undefined;
+    if (!concept.trim()) return undefined;
+    let cancelled = false;
+    (async () => {
+      if (cancelled) return;
+      setPendingAutorun(false);
+      generate();
+    })();
+    return () => { cancelled = true; };
+    // generate is intentionally omitted from deps: it is recreated on
+    // every render and would cause the effect to re-fire forever; the
+    // `pendingAutorun` guard already ensures one-shot execution.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingAutorun, mounted, loading, concept]);
+
   const specialGenerate = async (specialMode) => {
     if (marketResearch && !hasGeminiKey) return setError(t("prompt.marketResearchRequires"));
     const useMarketResearch = marketResearch && hasGeminiKey;
@@ -745,8 +785,6 @@ Keep the same subject and core idea, but make the new version more specific, mor
   const advancedIconStyle = gradient && advancedOn
     ? { background: gradient, boxShadow: "0 3px 10px rgba(0,0,0,0.2)" }
     : {};
-
-  const hasGeminiKey = mounted && getAllKeys("gemini").some(k => k.trim());
 
   return (
     <div className="page">
