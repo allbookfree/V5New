@@ -84,10 +84,19 @@ function buildAllowedOrigins(request) {
 
 export function enforceSameOrigin(request) {
   const origin = request.headers?.get?.("origin");
-  // No Origin header (server-to-server, curl, native apps) — only allow when
-  // running outside production. In production this fails closed, eliminating
-  // CSRF + drive-by quota burn from third-party sites that load images/scripts.
+  const secFetchSite = request.headers?.get?.("sec-fetch-site");
+  // No Origin header. Modern browsers (Chrome 76+, Firefox 90+, Safari 16+)
+  // omit the Origin header on safe same-origin requests like a top-level GET
+  // fetch initiated from page JS, but they still set Sec-Fetch-Site. Treat
+  // those as legitimate when Sec-Fetch-Site says "same-origin" (page JS) or
+  // "none" (top-level navigation, bookmark, address bar — values an attacker
+  // cannot forge from a third-party page). Anything else (server-to-server
+  // tools, curl without Origin, cross-site no-cors) only passes outside
+  // production so we don't break local development.
   if (!origin) {
+    if (secFetchSite === "same-origin" || secFetchSite === "none") {
+      return null;
+    }
     if (process.env.NODE_ENV === "production") {
       return jsonError("Missing Origin header.", 403, "CSRF_NO_ORIGIN");
     }
