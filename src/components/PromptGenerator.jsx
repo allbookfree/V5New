@@ -45,6 +45,7 @@ const SPECIAL_MODES_BY_TYPE = {
     { value: "t-shirt-graphic",  labelKey: "prompt.tShirtGraphic",    tipKey: "prompt.tShirtGraphicTip",    icon: Shirt,      color: "#f43f5e" },
     { value: "character-mascot", labelKey: "prompt.characterMascot",  tipKey: "prompt.characterMascotTip",  icon: Bot,        color: "#10b981" },
     { value: "icon-pack",        labelKey: "prompt.iconPack",         tipKey: "prompt.iconPackTip",         icon: Palette,    color: "#6366f1" },
+    { value: "icon-bundle",      labelKey: "prompt.iconBundle",       tipKey: "prompt.iconBundleTip",       icon: Box,        color: "#a855f7" },
     { value: "web-ui-icons",     labelKey: "prompt.webUiIcons",       tipKey: "prompt.webUiIconsTip",       icon: Layers,     color: "#0ea5e9" },
     { value: "pattern",          labelKey: "prompt.pattern",          tipKey: "prompt.patternTip",          icon: ImageIcon,  color: "#f59e0b" },
     { value: "sticker-pack",     labelKey: "prompt.stickerPack",      tipKey: "prompt.stickerPackTip",      icon: Star,       color: "#ec4899" },
@@ -650,17 +651,22 @@ Keep the same subject and core idea, but make the new version more specific, mor
     try {
       const seeds = getRandomSeeds(1, type, specialMode);
       const seed = seeds[0];
+      // Icon Bundle honors the user-typed concept as a locked theme. When the
+      // concept box is empty, it falls back to the seed-driven AI free choice
+      // like every other special mode.
+      const userConcept = concept.trim();
+      const usingUserTheme = specialMode === "icon-bundle" && userConcept.length > 0;
       const mrAutoApiKeys = useMarketResearch ? getAllKeys("gemini").filter(k => k.trim()) : apiKeys;
       const payload = {
-        concept: seed.seedPhrase,
+        concept: usingUserTheme ? userConcept : seed.seedPhrase,
         quantity,
         model: useMarketResearch ? "gemini" : actualModelKey,
         apiKeys: mrAutoApiKeys,
         apiKeysByModel,
         type,
         autoMode: true,
-        autoSubject: seed.seedPhrase,
-        autoCategory: "ai-free-choice",
+        autoSubject: usingUserTheme ? userConcept : seed.seedPhrase,
+        autoCategory: usingUserTheme ? "user-theme" : "ai-free-choice",
         autoContext: seed.context || "",
         targetMarket,
         halalMode,
@@ -811,7 +817,7 @@ Keep the same subject and core idea, but make the new version more specific, mor
           <div className="form-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
             <div>
               <label className="field-label" htmlFor="quantity-input"><Hash size={15} />{t("prompt.quantity")}</label>
-              <input id="quantity-input" type="number" className="field" min={1} max={100} value={quantity} onChange={(e) => setQuantity(Math.max(1, Math.min(100, +e.target.value || 1)))} />
+              <input id="quantity-input" type="number" className="field" min={1} max={200} value={quantity} onChange={(e) => setQuantity(Math.max(1, Math.min(200, +e.target.value || 1)))} />
             </div>
             <div>
               <label className="field-label" htmlFor="model-select"><Cpu size={15} />{t("prompt.aiProvider")}</label>
