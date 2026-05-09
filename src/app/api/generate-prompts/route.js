@@ -241,6 +241,48 @@ HALAL: 100% strictly NO human figures, faces, hands, or body parts in any icon. 
 ${marketplaceGuidance}`;
   }
 
+  if (specialMode === "icon-bundle") {
+    return `\n\n[SPECIAL MODE: THEMED ICON BUNDLE GENERATOR — COMMERCIAL MICROSTOCK SALE]
+YOU ARE GENERATING A LARGE THEMED ICON BUNDLE — a tightly focused set of icons all dedicated to ONE SINGLE industry/theme that buyers can purchase as a complete package.
+
+THEME LOCK (CRITICAL — this is what separates a Bundle from a generic Icon Pack):
+- The Topic line at the top of this request IS the theme. Every icon in this batch MUST belong to that one theme. Do NOT drift into adjacent industries.
+- If the Topic is generic or autonomously chosen ("ai-free-choice"), pick ONE specific commercially-valuable industry and lock it for the entire batch. Examples of what a single locked theme looks like: "technology", "medical & healthcare", "finance & banking", "e-commerce", "education", "food delivery", "fitness & wellness", "real estate", "travel & tourism", "smart home / IoT", "agriculture", "cybersecurity". Pick exactly ONE — never mix two.
+- Once locked, EVERY icon depicts a different concrete object/concept WITHIN that one theme — no off-theme icons.
+
+PROFESSIONAL ICON STANDARDS (same strictness as Icon Pack):
+- GRID ALIGNMENT: All icons designed as if on a 64×64 pixel grid — clean edges, no fractional positioning.
+- STROKE CONSISTENCY: If using outline/line style, ALL icons use the SAME stroke weight (e.g., "uniform 2pt stroke weight" or "consistent bold 3pt stroke"). Never mix thin and thick strokes within the bundle.
+- COLOR DISCIPLINE: Choose a STRICT palette of 3-4 colors maximum for the entire bundle. Every icon uses the SAME colors. Color consistency across the whole bundle is non-negotiable.
+- SIMPLICITY RULE: Each icon must be INSTANTLY RECOGNIZABLE at 32×32 pixels. Bold shapes, clear silhouettes, no clutter.
+- CLEAN VECTOR SHAPES: SVG-friendly geometric circles, rounded rectangles, clean curves. NO complex gradients, NO blur effects, NO photorealistic textures.
+- VARIANT NOTE: State whether the bundle is "filled icons" (solid shapes) or "outline/stroke icons" (line-based). Top-selling bundles offer both — mention this.
+
+BUNDLE STRUCTURAL RULES:
+- ALL icons share the SAME visual language: same art style, same exact color palette, same stroke weight or 3D rendering style, same level of detail.
+- Each icon depicts a DIFFERENT subject WITHIN the locked theme — different objects, different concrete concepts, different metaphors — but every single one obviously belongs to ONE bundle.
+- At the start of your output, mentally lock: (1) the art style (flat vector / line art / solid filled / sharp geometric / clean UI / duotone / 3D claymorphism / glassmorphism — pick ONE), (2) the exact 3-4 color palette (name the colors explicitly, e.g., "navy blue #1e3a8a, electric cyan #06b6d4, white"), (3) the locked industry/theme. Then generate EVERY icon following that exact same visual system.
+- THINK COMPREHENSIVE COVERAGE: a buyer purchasing this bundle should feel they have EVERY icon they need for the theme. Cover core concepts, supporting concepts, edge concepts. No gaps.
+
+PROMPT STRUCTURE FOR EACH ICON:
+- Subject (what the icon depicts, within the locked theme) + Locked art style + Exact locked color palette + Stroke/fill specification + Background ("isolated icon on pure white background" or "isolated icon on transparent background") + Grid alignment note + Simplicity level.
+- Every prompt MUST specify: "isolated icon on transparent background" or "isolated icon on pure white background" — CRITICAL for commercial viability.
+
+SEO & MARKETPLACE OPTIMIZATION (include in EACH prompt):
+- Include the locked theme keyword in EVERY prompt (e.g., if theme is "technology", every prompt says "technology icon" / "tech icon"; if "medical", every prompt says "medical icon" / "healthcare icon").
+- Describe the icon's intended USE CASE (e.g., "for mobile app UI", "for website navigation", "for presentation slides", "for infographic dashboard").
+- Buyers search by theme + use case — both must appear in every prompt.
+
+COMMERCIAL INTELLIGENCE:
+- Themed icon BUNDLES (large focused sets) sell 5-10x MORE than mixed icon packs — buyers want a complete kit for ONE project, not random icons.
+- Larger bundles (50, 100, 200 icons) command premium pricing because they save buyers from sourcing icons from multiple sellers.
+- Each individual icon must ALSO be standalone-sellable as a single PNG with transparent background — bundles also seed individual icon sales.
+- Anti-similarity within the bundle: every icon depicts a DIFFERENT concrete subject. Do NOT generate near-duplicates with only one detail changed.
+- AVOID trademark/brand logos (Facebook, Instagram, Twitter, Google, etc.) — these have legal restrictions. Focus on GENERIC CONCEPT icons.
+HALAL: 100% strictly NO human figures, faces, hands, or body parts in any icon. Use abstract representations, objects, symbols, architecture, food, plants, and nature elements ONLY.
+${marketplaceGuidance}`;
+  }
+
   if (specialMode === "pattern") {
     return `\n\n[SPECIAL MODE: SEAMLESS PATTERN GENERATOR — COMMERCIAL MICROSTOCK SALE]
 YOU ARE GENERATING SEAMLESS REPEATING PATTERN PROMPTS for commercial sale on microstock platforms.
@@ -1261,7 +1303,7 @@ function validateRequest(body) {
 
   if (!autoMode && !concept) return "Enter a prompt first.";
   if (concept.length > MAX_PROMPT_CHARS) return `Prompt is too long (max ${MAX_PROMPT_CHARS} chars).`;
-  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) return "Quantity: 1-100 only.";
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 200) return "Quantity: 1-200 only.";
   if (!ALLOWED_MODELS_SET.has(model)) return "Unknown model.";
   if (!ALLOWED_TYPES_SET.has(type)) return "Unknown prompt type.";
 
