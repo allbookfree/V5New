@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import MarketplaceTrendsSection from "@/components/MarketplaceTrendsSection";
+import DiscoverPanel from "@/components/DiscoverPanel";
+import AnalysisPanel from "@/components/AnalysisPanel";
+import { filterByFormat, FORMAT_KEYS } from "@/lib/marketTrendsFormats";
 import {
   TrendingUp, RefreshCw, ExternalLink, Calendar, Store,
   Lightbulb, ChevronDown, ChevronUp, Globe, Sparkles, AlertTriangle,
-  Image as ImageIcon, Palette, Video, Filter,
+  Image as ImageIcon, Palette, Video, Filter, Shirt, LayoutGrid,
 } from "lucide-react";
 
 // ─── Geo presets for the live Google Trends RSS feed ─────────────────
@@ -302,6 +305,15 @@ export default function MarketTrendsPage() {
     aiNotice: lang === "bn"
       ? "Google Trends সাধারণ search trend দেখায় — সব keyword stock-image-এর জন্য উপযুক্ত নয়। সেলিব্রিটির নাম, খেলার ফলাফল ইত্যাদি এড়িয়ে চলুন; aesthetic / lifestyle / seasonal keyword-এ ফোকাস করুন।"
       : "Google Trends shows general search trends — not all keywords translate to stock-image demand. Skip celebrity names and live sports results; focus on aesthetic / lifestyle / seasonal keywords.",
+    contextOnly: lang === "bn" ? "context সিগন্যাল" : "Context signal",
+    formatAll: lang === "bn" ? "সব" : "All",
+    formatImage: lang === "bn" ? "ছবি (Image)" : "Image",
+    formatVector: lang === "bn" ? "ভেক্টর / Icon" : "Vector / Icon",
+    formatVideo: lang === "bn" ? "ভিডিও" : "Video",
+    formatPod: lang === "bn" ? "POD (T-shirt / Sticker)" : "POD (T-shirt / Sticker)",
+    formatTabsHint: lang === "bn"
+      ? "নিচে সব section এই ফরম্যাটে relevant niche গুলো-ই দেখাবে।"
+      : "All sections below will be filtered to niches relevant to this format.",
   }), [lang]);
 
   // Effect-driven fetch keyed on geo + refreshKey. The synchronous
@@ -349,10 +361,50 @@ export default function MarketTrendsPage() {
   };
 
   const [hideLowRelevance, setHideLowRelevance] = useState(true);
+  // Per-format filter tab. Persists in URL hash so refresh keeps the
+  // tab. We initialise from the hash inside `useState` (lazy init) so
+  // we never have to call setState synchronously in an effect.
+  const [formatTab, setFormatTabRaw] = useState(() => {
+    if (typeof window === "undefined") return "all";
+    const hash = window.location.hash.replace(/^#/, "");
+    return FORMAT_KEYS.includes(hash) ? hash : "all";
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onHash = () => {
+      const next = window.location.hash.replace(/^#/, "");
+      if (FORMAT_KEYS.includes(next)) setFormatTabRaw(next);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  const setFormatTab = (key) => {
+    setFormatTabRaw(key);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.hash = key === "all" ? "" : key;
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
+
+  // The settings modal lives in the sidebar; we expose its trigger
+  // through the `#sidebar-api-keys-btn` button id so any deep-linked
+  // "Add API key" CTA can open it without prop-drilling state up.
+  const openSettings = useCallback(() => {
+    if (typeof document === "undefined") return;
+    const btn = document.getElementById("sidebar-api-keys-btn");
+    if (btn) btn.click();
+  }, []);
+
   const visibleTrends = useMemo(() => {
-    if (!hideLowRelevance) return data.trends;
-    return data.trends.filter(t => (t.relevanceScore ?? 5) >= 3);
-  }, [data.trends, hideLowRelevance]);
+    let out = data.trends;
+    if (hideLowRelevance) {
+      out = out.filter(t => (t.relevanceScore ?? 5) >= 3);
+    }
+    out = filterByFormat(out, formatTab);
+    return out;
+  }, [data.trends, hideLowRelevance, formatTab]);
 
   return (
     <div className="page-container">
@@ -523,6 +575,7 @@ export default function MarketTrendsPage() {
                         <Video size={11} /> {labels.video}
                       </Link>
                     </div>
+                    <AnalysisPanel query={t.title} compact />
                   </div>
                 </article>
                 );
@@ -537,7 +590,17 @@ export default function MarketTrendsPage() {
       </section>
 
       {/* ─── Section 1.5: Real Marketplace Trends (live, user-triggered) ─ */}
-      <MarketplaceTrendsSection generatorHrefFor={generatorHrefFor} />
+      <MarketplaceTrendsSection
+        generatorHrefFor={generatorHrefFor}
+        formatTab={formatTab}
+        onOpenSettings={openSettings}
+      />
+
+      {/* ─── Section 1.7: Auto-Discover Top 20 sales-relevant niches ─ */}
+      <DiscoverPanel
+        generatorHrefFor={generatorHrefFor}
+        formatTab={formatTab}
+      />
 
       {/* ─── Section 2: Seasonal calendar ─────────────────────────── */}
       <section style={sectionStyle}>
@@ -720,3 +783,65 @@ const footerLinkStyle = {
   color: "var(--text)", textDecoration: "none", fontSize: 13, fontWeight: 600,
   display: "flex", alignItems: "center", gap: 8,
 };
+
+// ─── Format tab bar ──────────────────────────────────────────────────
+//
+// One global tab bar that filters every section on the page (Google
+// Trends, Real Marketplace Trends, Auto-Discover) to the keywords
+// most relevant for the chosen output format. The filter is applied
+// client-side via `filterByFormat` so it costs zero API quota.
+
+function FormatTabs({ value, onChange, lang }) {
+  const labels = {
+    all: lang === "bn" ? "সব" : "All",
+    image: lang === "bn" ? "ছবি" : "Image",
+    vector: lang === "bn" ? "ভেক্টর / Icon" : "Vector / Icon",
+    video: lang === "bn" ? "ভিডিও" : "Video",
+    pod: lang === "bn" ? "POD" : "POD",
+    hint: lang === "bn"
+      ? "নিচে সব section এই ফরম্যাটে relevant niche গুলো-ই দেখাবে।"
+      : "All sections below filter to niches that sell well in this format.",
+  };
+  const tabs = [
+    { id: "all", label: labels.all, color: "#6366f1", Icon: LayoutGrid },
+    { id: "image", label: labels.image, color: "#6366f1", Icon: ImageIcon },
+    { id: "vector", label: labels.vector, color: "#06b6d4", Icon: Palette },
+    { id: "video", label: labels.video, color: "#f97316", Icon: Video },
+    { id: "pod", label: labels.pod, color: "#a855f7", Icon: Shirt },
+  ];
+  return (
+    <div style={{
+      position: "sticky", top: 0, zIndex: 5,
+      background: "var(--bg)", padding: "8px 0", marginBottom: 14,
+      borderBottom: "1px solid var(--border)",
+    }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text3)", marginRight: 4 }}>
+          {lang === "bn" ? "ফরম্যাট:" : "Format:"}
+        </span>
+        {tabs.map(t => {
+          const active = t.id === value;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => onChange(t.id)}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 5,
+                padding: "6px 12px", borderRadius: 8,
+                fontSize: 11, fontWeight: 700, cursor: "pointer",
+                border: `1px solid ${active ? t.color : "var(--border)"}`,
+                background: active ? `${t.color}22` : "var(--card)",
+                color: active ? t.color : "var(--text2)",
+              }}
+            >
+              <t.Icon size={12} />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+      <p style={{ margin: "6px 0 0", fontSize: 10, color: "var(--text4)" }}>{labels.hint}</p>
+    </div>
+  );
+}

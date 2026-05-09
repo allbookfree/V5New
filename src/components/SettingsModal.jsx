@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { X, KeyRound, Eye, EyeOff, Save, Shield, ExternalLink, Check, Lock, Loader2, AlertTriangle, Plus, Trash2, CheckCircle, ChevronDown, RotateCcw, BookOpen, Copy, Upload, Download, FileJson, FileText, ChevronRight } from "lucide-react";
 import { useApiKeys } from "@/context/ApiKeyContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -19,6 +19,9 @@ const PROVIDERS = [
   { key: "cerebras", label: "Cerebras", placeholder: "csk-...", color: "#ef4444", url: "https://cloud.cerebras.ai/", badge: "Free · Fast", badgeColor: "#dc2626", hintKey: "settings.cerebrasHint" },
   { key: "nvidia", label: "NVIDIA NIM", placeholder: "nvapi-...", color: "#22c55e", url: "https://build.nvidia.com/", badge: "Free credits", badgeColor: "#16a34a", hintKey: "settings.nvidiaHint" },
   { key: "github", label: "GitHub Models", placeholder: "ghp_...", color: "#000000", url: "https://github.com/settings/tokens/new", badge: "GPT-4o · Free", badgeColor: "#000000", hintKey: "settings.githubHint" },
+  // ── Stock-image data providers (used by /market-trends, not LLM calls) ──
+  { key: "pixabay", label: "Pixabay", placeholder: "32-char hex...", color: "#16a34a", url: "https://pixabay.com/api/docs/", badge: "Market Trends", badgeColor: "#15803d", group: "data" },
+  { key: "pexels", label: "Pexels", placeholder: "56-char...", color: "#0ea5e9", url: "https://www.pexels.com/api/new/", badge: "Market Trends", badgeColor: "#0369a1", group: "data" },
 ];
 
 const APPS_SCRIPT_CODE = `function doPost(e) {
@@ -118,7 +121,7 @@ function detectProviderFromKey(key) {
 
 // Parse uploaded file content into { provider: [keys] }
 function parseImportFile(text, fileType) {
-  const result = { gemini: [], groq: [], mistral: [], openrouter: [], huggingface: [], cerebras: [], nvidia: [], github: [] };
+  const result = { gemini: [], groq: [], mistral: [], openrouter: [], huggingface: [], cerebras: [], nvidia: [], github: [], pixabay: [], pexels: [] };
   try {
     if (fileType === "json") {
       const parsed = JSON.parse(text);
@@ -263,6 +266,8 @@ export default function SettingsModal({ isOpen, onClose }) {
     cerebras: normalizeKey(keys.cerebras),
     nvidia: normalizeKey(keys.nvidia),
     github: normalizeKey(keys.github),
+    pixabay: normalizeKey(keys.pixabay),
+    pexels: normalizeKey(keys.pexels),
   };
 
   const handleSave = () => { saveKeys(form); setSaved(true); setTimeout(() => { setSaved(false); onClose(); }, 800); };
@@ -532,8 +537,25 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
 
             <div className="modal-providers">
-              {PROVIDERS.map((p) => (
-                <div key={p.key} className="modal-provider">
+              {PROVIDERS.map((p, idx) => (
+                <Fragment key={p.key}>
+                  {/* Inject a section header before the first "data" group
+                      provider so users can see at a glance that Pixabay
+                      and Pexels are stock-image data feeds, not LLMs. */}
+                  {p.group === "data" && (PROVIDERS[idx - 1]?.group !== "data") && (
+                    <div className="modal-provider" style={{ background: "transparent", border: "1px dashed var(--border)", padding: "10px 12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 12, color: "var(--text2)", textTransform: "uppercase", letterSpacing: 0.4 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16a34a" }} />
+                        {lang === "bn" ? "মার্কেট ট্রেন্ডস ডেটা সোর্স" : "Market Trends data sources"}
+                      </div>
+                      <div style={{ marginTop: 4, fontSize: 11, color: "var(--text2)" }}>
+                        {lang === "bn"
+                          ? "এই keys শুধুমাত্র /market-trends পেজে real-time stock photo / vector signal আনার জন্য — কোনো AI / LLM call হয় না।"
+                          : "These keys are used only by the /market-trends page to surface real-time stock photo / vector demand signals. They are never used for AI / LLM calls."}
+                      </div>
+                    </div>
+                  )}
+                <div className="modal-provider">
                   <div className="modal-provider-header">
                     <div className="modal-provider-info">
                       <span className="modal-provider-dot" style={{ background: p.color }} />
@@ -641,6 +663,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                     <p className="modal-hint">{t(p.hintKey)}</p>
                   )}
                 </div>
+                </Fragment>
               ))}
             </div>
 

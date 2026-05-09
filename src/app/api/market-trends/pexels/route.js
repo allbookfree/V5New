@@ -1,4 +1,10 @@
-import { enforceSameOrigin, fetchWithTimeout } from "@/lib/apiUtils";
+import {
+  enforceSameOrigin,
+  fetchWithTimeout,
+  readJsonBody,
+  sanitizeKeys,
+  MAX_REQUEST_BODY_BYTES,
+} from "@/lib/apiUtils";
 import { readCache, readStaleCache, writeCache, isoNow } from "@/lib/marketTrendsCache";
 
 /**
@@ -36,24 +42,61 @@ const ALLOWED_KINDS = new Set(["curated-photo", "popular-video"]);
 const DEFAULT_KIND = "curated-photo";
 
 export async function GET(request) {
+  return handle(request, { method: "GET" });
+}
+
+export async function POST(request) {
+  return handle(request, { method: "POST" });
+}
+
+async function handle(request, { method }) {
   const csrf = enforceSameOrigin(request);
   if (csrf) return csrf;
 
-  const apiKey = process.env.PEXELS_API_KEY;
-  if (!apiKey || !apiKey.trim()) {
+  // Same key resolution as the Pixabay route: POST body wins, then
+  // ?key= query, then PEXELS_API_KEY env. Anything else returns a
+  // structured `configured: false` body for the UI to render.
+  let apiKey = "";
+  let kind = DEFAULT_KIND;
+
+  if (method === "POST") {
+    let body;
+    try {
+      body = await readJsonBody(request, MAX_REQUEST_BODY_BYTES.general);
+    } catch {
+      body = {};
+    }
+    const apiKeys = body.apiKeysByModel?.pexels
+      ? sanitizeKeys(body.apiKeysByModel.pexels)
+      : sanitizeKeys(body.apiKeys);
+    apiKey = apiKeys[0] || "";
+    if (typeof body.kind === "string") kind = body.kind.toLowerCase();
+  }
+
+  const url = new URL(request.url);
+  if (!apiKey) {
+    const queryKey = url.searchParams.get("key");
+    if (queryKey && queryKey.trim()) apiKey = queryKey.trim();
+  }
+  if (!apiKey && process.env.PEXELS_API_KEY) {
+    apiKey = process.env.PEXELS_API_KEY.trim();
+  }
+  if (method === "GET") {
+    const qKind = url.searchParams.get("kind");
+    if (qKind) kind = qKind.toLowerCase();
+  }
+  if (!ALLOWED_KINDS.has(kind)) kind = DEFAULT_KIND;
+
+  if (!apiKey) {
     return jsonResponse({
       ok: false,
       configured: false,
       source: "pexels",
       fetchedAt: isoNow(),
       items: [],
-      error: "PEXELS_API_KEY not configured. Get a free key from https://www.pexels.com/api/new/",
+      error: "No Pexels API key. Add a free key in Settings → API Keys → Pexels (https://www.pexels.com/api/new/).",
     });
   }
-
-  const url = new URL(request.url);
-  const requestedKind = (url.searchParams.get("kind") || DEFAULT_KIND).toLowerCase();
-  const kind = ALLOWED_KINDS.has(requestedKind) ? requestedKind : DEFAULT_KIND;
 
   const cacheKey = kind;
   const cached = readCache("pexels", cacheKey);

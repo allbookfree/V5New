@@ -1,4 +1,10 @@
-import { enforceSameOrigin, fetchWithTimeout } from "@/lib/apiUtils";
+import {
+  enforceSameOrigin,
+  fetchWithTimeout,
+  readJsonBody,
+  sanitizeKeys,
+  MAX_REQUEST_BODY_BYTES,
+} from "@/lib/apiUtils";
 import { readCache, readStaleCache, writeCache, isoNow } from "@/lib/marketTrendsCache";
 
 /**
@@ -68,26 +74,70 @@ const ALLOWED_FORMATS = new Set(["photo", "vector", "illustration", "all"]);
 const DEFAULT_FORMAT = "all";
 
 export async function GET(request) {
+  return handle(request, { method: "GET" });
+}
+
+export async function POST(request) {
+  return handle(request, { method: "POST" });
+}
+
+async function handle(request, { method }) {
   const csrf = enforceSameOrigin(request);
   if (csrf) return csrf;
 
-  const apiKey = process.env.PIXABAY_API_KEY;
-  if (!apiKey || !apiKey.trim()) {
+  // Resolve the user-supplied API key with this priority:
+  //   1) POST body  apiKeys: [...]  or  apiKeysByModel.pixabay: [...]
+  //   2) URL query  ?key=...
+  //   3) Server env PIXABAY_API_KEY (legacy / smoke-test path)
+  // The UI sends the key from the API Keys panel via POST body so
+  // the user never needs to set an env var. We pick the first valid
+  // key from whichever source provides it.
+  let apiKey = "";
+  let category = DEFAULT_CATEGORY;
+  let format = DEFAULT_FORMAT;
+
+  if (method === "POST") {
+    let body;
+    try {
+      body = await readJsonBody(request, MAX_REQUEST_BODY_BYTES.general);
+    } catch {
+      body = {};
+    }
+    const apiKeys = body.apiKeysByModel?.pixabay
+      ? sanitizeKeys(body.apiKeysByModel.pixabay)
+      : sanitizeKeys(body.apiKeys);
+    apiKey = apiKeys[0] || "";
+    if (typeof body.category === "string") category = body.category.toLowerCase();
+    if (typeof body.format === "string") format = body.format.toLowerCase();
+  }
+
+  const url = new URL(request.url);
+  if (!apiKey) {
+    const queryKey = url.searchParams.get("key");
+    if (queryKey && queryKey.trim()) apiKey = queryKey.trim();
+  }
+  if (!apiKey && process.env.PIXABAY_API_KEY) {
+    apiKey = process.env.PIXABAY_API_KEY.trim();
+  }
+  if (method === "GET") {
+    const qCategory = url.searchParams.get("category");
+    if (qCategory) category = qCategory.toLowerCase();
+    const qFormat = url.searchParams.get("format");
+    if (qFormat) format = qFormat.toLowerCase();
+  }
+  if (!ALLOWED_CATEGORIES.has(category)) category = DEFAULT_CATEGORY;
+  if (!ALLOWED_FORMATS.has(format)) format = DEFAULT_FORMAT;
+
+  if (!apiKey) {
     return jsonResponse({
       ok: false,
       configured: false,
       source: "pixabay",
       fetchedAt: isoNow(),
       items: [],
-      error: "PIXABAY_API_KEY not configured. Add a free key from https://pixabay.com/api/docs/",
+      error: "No Pixabay API key. Add a free key in Settings → API Keys → Pixabay (https://pixabay.com/api/docs/).",
     });
   }
-
-  const url = new URL(request.url);
-  const requestedCategory = (url.searchParams.get("category") || DEFAULT_CATEGORY).toLowerCase();
-  const category = ALLOWED_CATEGORIES.has(requestedCategory) ? requestedCategory : DEFAULT_CATEGORY;
-  const requestedFormat = (url.searchParams.get("format") || DEFAULT_FORMAT).toLowerCase();
-  const format = ALLOWED_FORMATS.has(requestedFormat) ? requestedFormat : DEFAULT_FORMAT;
 
   const cacheKey = `${category}:${format}`;
   const cached = readCache("pixabay", cacheKey);
