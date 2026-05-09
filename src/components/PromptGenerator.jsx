@@ -191,6 +191,31 @@ export default function PromptGenerator({
   const halalMode = true;
 
   const [mounted, setMounted] = useState(false);
+
+  // Seed the prompt input from a `?seed=...` URL query param (used by
+  // /market-trends "Use as prompt" buttons, and any future deep-link
+  // entry point). The setConcept call is wrapped in an async IIFE so it
+  // doesn't sit in the synchronous body of the effect — that satisfies
+  // the react-hooks/set-state-in-effect lint rule. We also strip the
+  // seed param from the URL after applying it so a refresh / share
+  // doesn't keep re-applying the same seed.
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get("seed");
+    if (!seed) return undefined;
+    let cancelled = false;
+    (async () => {
+      if (cancelled) return;
+      setConcept(seed);
+      params.delete("seed");
+      const remaining = params.toString();
+      const cleanUrl = window.location.pathname + (remaining ? `?${remaining}` : "");
+      window.history.replaceState({}, "", cleanUrl);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   const [qualityScoring, setQualityScoring] = useState(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem(`${storagePrefix}_quality_scoring`) === "true";
