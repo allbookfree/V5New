@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import MarketplaceTrendsSection from "@/components/MarketplaceTrendsSection";
 import {
   TrendingUp, RefreshCw, ExternalLink, Calendar, Store,
   Lightbulb, ChevronDown, ChevronUp, Globe, Sparkles, AlertTriangle,
@@ -534,6 +535,9 @@ export default function MarketTrendsPage() {
           </p>
         )}
       </section>
+
+      {/* ─── Section 1.5: Real Marketplace Trends (live, user-triggered) ─ */}
+      <MarketplaceTrendsSection generatorHrefFor={generatorHrefFor} />
 
       {/* ─── Section 2: Seasonal calendar ─────────────────────────── */}
       <section style={sectionStyle}>
