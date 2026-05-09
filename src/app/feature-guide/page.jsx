@@ -240,6 +240,12 @@ const FIT = {
     pixabay: "ok", wirestock: "good", etsy: "best", redbubble: "best", society6: "best",
     creativemarket: "best", envato: "good", "amazon-kdp": "ok",
   },
+  "vector:collection": {
+    adobe: "best", shutterstock: "good", freepik: "best", getty: "ok", dreamstime: "good",
+    vecteezy: "best", pond5: "avoid", depositphotos: "best", "123rf": "good", pixta: "good",
+    pixabay: "good", wirestock: "good", etsy: "best", redbubble: "good", society6: "good",
+    creativemarket: "best", envato: "best", "amazon-kdp": "good",
+  },
   // Video modes
   "video:auto": {
     adobe: "good", shutterstock: "best", freepik: "ok", getty: "best", dreamstime: "good",
