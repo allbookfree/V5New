@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   LayoutGrid, Image as ImageIcon, Palette, Video,
-  CheckCircle2, AlertTriangle, XCircle, Info,
+  CheckCircle2, AlertTriangle, XCircle, Info, TrendingUp,
 } from "lucide-react";
 
 // ─── Mode catalogue (label + bilingual hint) ─────────────────────────
@@ -366,6 +366,7 @@ export default function FeatureGuidePage() {
       : "Marketplaces marked ⚠️ don't accept raw AI output — apply your own manual edit / curation pass before upload.",
     seeMarket: lang === "bn" ? "মার্কেটপ্লেস গাইড দেখুন" : "Open Marketplace Guide",
     seeModel: lang === "bn" ? "মডেল গাইড দেখুন" : "Open Model Guide",
+    seeTrends: lang === "bn" ? "মার্কেট ট্রেন্ডস দেখুন" : "Open Market Trends",
   };
 
   const modes = MODES[tab];
@@ -491,6 +492,14 @@ export default function FeatureGuidePage() {
 
       {/* Footer hint */}
       <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <Link href="/market-trends" style={{
+          flex: 1, minWidth: 220, padding: "12px 14px", borderRadius: 10,
+          border: "1px solid #6366f1", background: "rgba(99,102,241,0.08)",
+          color: "#6366f1", textDecoration: "none", fontSize: 13, fontWeight: 700,
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <TrendingUp size={14} /> {labels.seeTrends}
+        </Link>
         <Link href="/marketplace-guide" style={{
           flex: 1, minWidth: 220, padding: "12px 14px", borderRadius: 10,
           border: "1px solid var(--border)", background: "var(--card)",

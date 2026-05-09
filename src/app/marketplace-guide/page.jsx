@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { Store, Image, Palette, Video, Star, Check, X, ChevronDown, ChevronUp, ExternalLink, TrendingUp, DollarSign, Globe, Shield, LayoutGrid } from "lucide-react";
 
@@ -1101,6 +1102,28 @@ export default function MarketplaceGuidePage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── Cross-link: Market Trends ────────────────────────────── */}
+      <div style={{ marginTop: 24, display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <Link href="/market-trends" style={{
+          flex: 1, minWidth: 220, padding: "12px 14px", borderRadius: 10,
+          border: "1px solid #6366f1", background: "rgba(99,102,241,0.08)",
+          color: "#6366f1", textDecoration: "none", fontSize: 13, fontWeight: 700,
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <TrendingUp size={14} />
+          {lang === "bn" ? "মার্কেট ট্রেন্ডস দেখুন — কোন niche এখন গরম" : "Open Market Trends — see what niches are hot right now"}
+        </Link>
+        <Link href="/feature-guide" style={{
+          flex: 1, minWidth: 220, padding: "12px 14px", borderRadius: 10,
+          border: "1px solid var(--border)", background: "var(--card)",
+          color: "var(--text)", textDecoration: "none", fontSize: 13, fontWeight: 600,
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <LayoutGrid size={14} />
+          {lang === "bn" ? "ফিচার ম্যাট্রিক্স দেখুন" : "Open Feature Matrix"}
+        </Link>
       </div>
     </div>
   );
