@@ -64,6 +64,53 @@ export async function copyToClipboard(text) {
   }
 }
 
+// Copy a list of prompts in an Excel-friendly format so that pasting into a
+// spreadsheet drops each prompt into its own row (rather than every prompt
+// collapsing into a single cell).  We publish both:
+//   - text/html  : a <table> with one <tr> per prompt — spreadsheets prefer
+//                  this when available and use it to assign rows.
+//   - text/plain : the same prompts joined with CRLF — works as a graceful
+//                  fallback for plain text targets and older clipboards.
+export async function copyPromptsAsRows(prompts) {
+  const list = Array.isArray(prompts) ? prompts.filter(p => typeof p === "string" && p.length > 0) : [];
+  if (list.length === 0) return false;
+
+  const escapeHtml = (s) => String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+  // Strip tabs and CR/LF from each prompt so the row boundaries stay intact
+  // when the clipboard target falls back to text/plain.
+  const sanitizedPlain = list.map(p => String(p).replace(/[\r\n\t]+/g, " ").trim());
+  const plain = sanitizedPlain.join("\r\n");
+
+  const html =
+    `<table><tbody>` +
+    sanitizedPlain.map(p => `<tr><td>${escapeHtml(p)}</td></tr>`).join("") +
+    `</tbody></table>`;
+
+  try {
+    if (typeof window !== "undefined" && window.ClipboardItem && navigator.clipboard?.write) {
+      const item = new window.ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([plain], { type: "text/plain" }),
+      });
+      await navigator.clipboard.write([item]);
+      return true;
+    }
+  } catch {}
+
+  try {
+    await navigator.clipboard.writeText(plain);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function downloadPromptsCsv(prompts, filenamePrefix = "prompts") {
   const csv =
     "Number,Prompt\n" +

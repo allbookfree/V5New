@@ -11,7 +11,131 @@ import { PROVIDERS_UI } from "@/config/models";
 import { PROVIDER_MODELS } from "@/config/providerModels";
 import { getModelKey, groupMatrixByModel, initModelProgress, loadModelQueue, saveModelQueue, clearModelQueue, getModelSummary } from "@/lib/modelQueueManager";
 
-const MARKETPLACES = ["all", "adobe", "shutterstock", "freepik", "getty", "dreamstime", "vecteezy", "pond5", "creativemarket"];
+// Keep in sync with the marketplaces shown in PromptGenerator.jsx so the
+// benchmark exercises every marketplace the production UI exposes.
+const MARKETPLACES = [
+  "all",
+  // Direct API / scraping-free marketplaces
+  "adobe",
+  "freepik",
+  "dreamstime",
+  "vecteezy",
+  "etsy",
+  "wirestock",
+  "redbubble",
+  "123rf",
+  "pixta",
+  "society6",
+  "pixabay",
+  // Manual-touch marketplaces
+  "shutterstock",
+  "getty",
+  "depositphotos",
+  "pond5",
+  "creativemarket",
+  "envato",
+  "amazon-kdp",
+];
+
+// Keep in sync with SPECIAL_MODES_BY_TYPE in PromptGenerator.jsx so the
+// benchmark always exercises every generation mode the website exposes.
+// `auto` and `engineer` are universal modes prepended to every list.
+const SPECIAL_MODES_BY_TYPE = {
+  image: [
+    "surreal",
+    "background-texture",
+    "wall-art",
+    "mockup",
+    "collection",
+    "print-on-demand",
+    "seasonal",
+  ],
+  vector: [
+    "glyph-icons",
+    "t-shirt-graphic",
+    "character-mascot",
+    "icon-pack",
+    "icon-bundle",
+    "web-ui-icons",
+    "pattern",
+    "sticker-pack",
+    "clipart-bundle",
+    "logo-element",
+    "infographic",
+    "social-template",
+    "background-texture",
+    "brand-icons",
+    "collection",
+  ],
+  video: [
+    "aerial-drone",
+    "macro-cinematic",
+    "product-showcase",
+    "b-roll",
+    "loopable",
+    "vertical",
+    "time-lapse",
+    "slow-motion",
+    "motion-graphics",
+    "collection",
+  ],
+};
+
+const getModesForType = (type) => ["auto", "engineer", ...(SPECIAL_MODES_BY_TYPE[type] || [])];
+
+const MODE_LABELS = {
+  auto: "Auto",
+  engineer: "Engineer",
+  // image
+  "surreal": "Surreal",
+  "background-texture": "BG/Texture",
+  "wall-art": "Wall Art",
+  "mockup": "Mockup",
+  "collection": "Collection",
+  "print-on-demand": "Print-on-Demand",
+  "seasonal": "Seasonal",
+  // vector
+  "glyph-icons": "Glyph Icons",
+  "t-shirt-graphic": "T-Shirt Graphic",
+  "character-mascot": "Character Mascot",
+  "icon-pack": "Icon Pack",
+  "icon-bundle": "Glyph Bundle",
+  "web-ui-icons": "Web UI Icons",
+  "pattern": "Pattern",
+  "sticker-pack": "Sticker",
+  "clipart-bundle": "Clipart",
+  "logo-element": "Logo Element",
+  "infographic": "Infographic",
+  "social-template": "Social",
+  "brand-icons": "Brand Icons",
+  // video
+  "aerial-drone": "Aerial / Drone",
+  "macro-cinematic": "Macro Cinematic",
+  "product-showcase": "Product Showcase",
+  "b-roll": "B-roll",
+  "loopable": "Loopable",
+  "vertical": "Vertical (9:16)",
+  "time-lapse": "Time-lapse",
+  "slow-motion": "Slow-motion",
+  "motion-graphics": "Motion graphics",
+};
+
+// Modes that have a dedicated `.btn-<value>` class baked into the legacy
+// CSS — used by Live Visual Automation to highlight the right button.
+const LEGACY_MODE_BUTTON_CLASSES = new Set([
+  "auto", "engineer", "icon-pack", "pattern", "sticker-pack", "mockup",
+  "social-template", "infographic", "surreal", "background-texture",
+  "web-ui-icons", "clipart-bundle", "logo-element", "wall-art", "collection",
+]);
+
+// Union of every mode the AutoTester knows about. Used as the default
+// `selectedModes` so toggling type pre-selects everything that applies.
+const ALL_MODES = Array.from(new Set([
+  "auto", "engineer",
+  ...SPECIAL_MODES_BY_TYPE.image,
+  ...SPECIAL_MODES_BY_TYPE.vector,
+  ...SPECIAL_MODES_BY_TYPE.video,
+]));
 const HEARTBEAT_MS = 15000;
 const STALL_STEP_MS = 8 * 60 * 1000;
 const INITIAL_COOLDOWN_MS = 5 * 60 * 1000;   // 5 minutes — adaptive start (most rate limits reset quickly)
@@ -33,7 +157,7 @@ export default function AutoTester({ type, setMainPrompts, setMainLoading, setMa
   const [selectedProviders, setSelectedProviders] = useState(Object.keys(PROVIDER_MODELS));
   const [selectedModels, setSelectedModels] = useState(() => Object.values(PROVIDER_MODELS).flat().map(m => m.value));
   const [selectedMarketplaces, setSelectedMarketplaces] = useState(MARKETPLACES);
-  const [selectedModes, setSelectedModes] = useState(["auto", "engineer", "icon-pack", "pattern", "sticker-pack", "mockup", "social-template", "infographic", "surreal", "background-texture", "web-ui-icons", "clipart-bundle", "logo-element", "brand-icons", "wall-art", "collection"].filter(Boolean));
+  const [selectedModes, setSelectedModes] = useState(ALL_MODES);
   const [isLeaderboardExpanded, setIsLeaderboardExpanded] = useState(false);
   
   const [autoSyncSheets, setAutoSyncSheets] = useState(() => {
@@ -303,11 +427,7 @@ export default function AutoTester({ type, setMainPrompts, setMainLoading, setMa
   
   // Create test matrix excluding section-incompatible modes
   const getMatrix = (isExpressMode = false) => {
-    const modes = type === "video"
-      ? ["auto", "engineer", "collection"]
-      : type === "image"
-        ? ["auto", "engineer", "surreal", "background-texture", "wall-art", "mockup", "collection"]
-        : ["auto", "engineer", "icon-pack", "web-ui-icons", "brand-icons", "pattern", "sticker-pack", "clipart-bundle", "logo-element", "infographic", "social-template", "background-texture", "collection"];
+    const modes = getModesForType(type);
       
     const matrix = [];
     
@@ -878,22 +998,23 @@ export default function AutoTester({ type, setMainPrompts, setMainLoading, setMa
             marketSelect.classList.remove("visual-focus");
           }
           
-          let btnClass = ".btn-auto";
-          if (activeStep.mode === "engineer") btnClass = ".btn-engineer";
-          else if (activeStep.mode === "icon-pack") btnClass = ".btn-icon-pack";
-          else if (activeStep.mode === "pattern") btnClass = ".btn-pattern";
-          else if (activeStep.mode === "sticker-pack") btnClass = ".btn-sticker-pack";
-          else if (activeStep.mode === "mockup") btnClass = ".btn-mockup";
-          else if (activeStep.mode === "social-template") btnClass = ".btn-social-template";
-          else if (activeStep.mode === "infographic") btnClass = ".btn-infographic";
-          else if (activeStep.mode === "surreal") btnClass = ".btn-surreal";
-          else if (activeStep.mode === "background-texture") btnClass = ".btn-background-texture";
-          else if (activeStep.mode === "web-ui-icons") btnClass = ".btn-web-ui-icons";
-          else if (activeStep.mode === "clipart-bundle") btnClass = ".btn-clipart-bundle";
-          else if (activeStep.mode === "logo-element") btnClass = ".btn-logo-element";
-          else if (activeStep.mode === "wall-art") btnClass = ".btn-wall-art";
-          else if (activeStep.mode === "collection") btnClass = ".btn-collection";
-          
+          // For "auto" / "engineer" the legacy `.btn-auto` / `.btn-engineer`
+          // classes still apply.  All other modes are special modes that
+          // share `.btn-special-mode` in PromptGenerator, so we target them
+          // via the `data-mode` attribute. If a legacy `.btn-<mode>` class
+          // happens to exist we still try that first as a backwards-compatible
+          // fallback for older builds.
+          let btnClass;
+          if (activeStep.mode === "auto") {
+            btnClass = ".btn-auto";
+          } else if (activeStep.mode === "engineer") {
+            btnClass = ".btn-engineer";
+          } else if (LEGACY_MODE_BUTTON_CLASSES.has(activeStep.mode)) {
+            btnClass = `.btn-${activeStep.mode}, button[data-mode="${activeStep.mode}"]`;
+          } else {
+            btnClass = `button[data-mode="${activeStep.mode}"]`;
+          }
+
           const genBtn = document.querySelector(btnClass);
           if (genBtn) {
             genBtn.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2007,15 +2128,9 @@ export default function AutoTester({ type, setMainPrompts, setMainLoading, setMa
             
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginTop: '-2px' }}>
               <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text2)', marginRight: 4 }}>Target Modes:</span>
-              {(type === "video"
-                ? ["auto", "engineer", "collection"]
-                : type === "image"
-                  ? ["auto", "engineer", "surreal", "background-texture", "wall-art", "mockup", "collection"]
-                  : ["auto", "engineer", "icon-pack", "web-ui-icons", "pattern", "sticker-pack", "clipart-bundle", "logo-element", "infographic", "social-template", "background-texture", "collection"]
-              ).map(m => {
+              {getModesForType(type).map(m => {
                 const isActive = selectedModes.includes(m);
-                const mLabels = { "icon-pack": "Icon Pack", "sticker-pack": "Sticker", "social-template": "Social", "infographic": "Infographic", "surreal": "Surreal", "background-texture": "BG/Texture", "web-ui-icons": "Web UI Icons", "clipart-bundle": "Clipart", "logo-element": "Logo Element", "wall-art": "Wall Art" };
-                const mLabel = mLabels[m] || m.charAt(0).toUpperCase() + m.slice(1);
+                const mLabel = MODE_LABELS[m] || m.charAt(0).toUpperCase() + m.slice(1);
                 return (
                   <button
                     key={m}

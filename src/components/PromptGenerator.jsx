@@ -8,7 +8,7 @@ const AutoTester = dynamic(() => import("./AutoTester"), { ssr: false });
 
 import { useApiKeys } from "@/context/ApiKeyContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { copyToClipboard, downloadPromptsCsv, downloadPromptsTxt, parseNumberedPrompts } from "@/lib/promptUtils";
+import { copyToClipboard, copyPromptsAsRows, downloadPromptsCsv, downloadPromptsTxt, parseNumberedPrompts } from "@/lib/promptUtils";
 import { mapApiError } from "@/lib/apiErrors";
 import { saveToPromptHistory } from "@/lib/promptHistory";
 import { getRandomSeeds } from "@/lib/subjectPool";
@@ -753,7 +753,7 @@ Keep the same subject and core idea, but make the new version more specific, mor
     const list = selected.size > 0
       ? prompts.filter((_, i) => selected.has(i))
       : [...prompts];
-    await copyToClipboard(list.join("\n"));
+    await copyPromptsAsRows(list);
     setCopiedAll(true);
     setTimeout(() => setCopiedAll(false), 1800);
   };
@@ -940,6 +940,7 @@ Keep the same subject and core idea, but make the new version more specific, mor
                     <button
                       key={m.value}
                       className="btn btn-special-mode"
+                      data-mode={m.value}
                       style={{ "--mode-color": m.color }}
                       onClick={() => {
                         // Seasonal button auto-enables Festival Mode for synergy
