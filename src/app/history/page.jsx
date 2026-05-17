@@ -5,7 +5,7 @@ import { History, Search, Copy, Check, Trash2, Sparkles, Image, Palette, Video, 
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { getPromptHistory, clearPromptHistory, removeFromPromptHistory } from "@/lib/promptHistory";
-import { copyToClipboard } from "@/lib/promptUtils";
+import { copyToClipboard, copyPromptsAsRows } from "@/lib/promptUtils";
 
 const TYPES = [
   { key: "all", icon: History },
@@ -44,9 +44,9 @@ export default function HistoryPage() {
   };
 
   const handleCopyAll = async () => {
-    const textToCopy = getPrompts().map(p => p.text).join("\n");
-    if (!textToCopy) return;
-    const ok = await copyToClipboard(textToCopy);
+    const list = getPrompts().map(p => p.text);
+    if (list.length === 0) return;
+    const ok = await copyPromptsAsRows(list);
     if (ok) {
       setCopiedAll(true);
       setTimeout(() => setCopiedAll(false), 2000);
